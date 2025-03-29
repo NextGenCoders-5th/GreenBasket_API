@@ -12,6 +12,7 @@ import { SwaggerConfigModule } from './common/swagger/swagger.module';
 import { PinnoLoggerModule } from './common/pinno-logger/pinno-logger.module';
 import { InterceptorsModule } from './common/interceptors/interceptors.module';
 import { ConfigurationModule } from './common/configuration/configuration.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ConfigurationModule } from './common/configuration/configuration.module
     PinnoLoggerModule,
     InterceptorsModule,
     ConfigurationModule,
+    ArticleModule,
   ],
   controllers: [],
   providers: [],
