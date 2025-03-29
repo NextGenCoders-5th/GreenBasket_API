@@ -8,6 +8,10 @@ import { ProductsModule } from './api/products/products.module';
 import { UsersModule } from './api/users/users.module';
 import { VendorsModule } from './api/vendors/vendors.module';
 import { PrismaModule } from './common/prisma/prisma.module';
+import { SwaggerConfigModule } from './common/swagger/swagger.module';
+import { PinnoLoggerModule } from './common/pinno-logger/pinno-logger.module';
+import { InterceptorsModule } from './common/interceptors/interceptors.module';
+import { ConfigurationModule } from './common/configuration/configuration.module';
 
 @Module({
   imports: [
@@ -20,6 +24,10 @@ import { PrismaModule } from './common/prisma/prisma.module';
     CategoriesModule,
     ProductsModule,
     PrismaModule,
+    SwaggerConfigModule,
+    PinnoLoggerModule,
+    InterceptorsModule,
+    ConfigurationModule,
   ],
   controllers: [],
   providers: [],
