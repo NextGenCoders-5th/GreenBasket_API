@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { VendorsModule } from './vendors/vendors.module';
-import { AddressesModule } from './addresses/addresses.module';
-import { OrdersModule } from './orders/orders.module';
-import { OrderItemsModule } from './order_items/order_items.module';
-import { PaymentsModule } from './payments/payments.module';
-import { CategoriesModule } from './categories/categories.module';
-import { ProductsModule } from './products/products.module';
+import { AddressesModule } from './api/addresses/addresses.module';
+import { CategoriesModule } from './api/categories/categories.module';
+import { OrderItemsModule } from './api/order_items/order_items.module';
+import { OrdersModule } from './api/orders/orders.module';
+import { PaymentsModule } from './api/payments/payments.module';
+import { ProductsModule } from './api/products/products.module';
+import { UsersModule } from './api/users/users.module';
+import { VendorsModule } from './api/vendors/vendors.module';
+import { PrismaModule } from './common/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProductsModule } from './products/products.module';
     PaymentsModule,
     CategoriesModule,
     ProductsModule,
+    PrismaModule,
   ],
   controllers: [],
   providers: [],
