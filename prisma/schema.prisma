@@ -24,8 +24,8 @@ model User {
   phone_number    String      @unique
   password        String
   profile_picture String?
-  role            user_role   @default(CUSTOMER)
-  status          user_status @default(ACTIVE)
+  role            UserRole   @default(CUSTOMER)
+  status          UserStatus @default(ACTIVE)
 
   // user may or may not be a vendor
   vendor  Vendor?
@@ -46,7 +46,7 @@ model Vendor {
   business_email String        @unique
   phone_number   String        @unique
   logo_url       String?
-  status         vendor_status @default(PENDING)
+  status         VendorStatus @default(PENDING)
 
   // user may or may not be a vendor
   user     User      @relation(fields: [userId], references: [id])
@@ -71,7 +71,7 @@ model Address {
   latitude   String
   longitude  String
   is_default Boolean      @default(false)
-  type       address_type
+  type       AddressType
 
   // one user many addresses
   User     User?   @relation(fields: [userId], references: [id])
@@ -90,7 +90,7 @@ model Category {
   name      String
   slug      String          @unique
   image_url String?
-  status    category_status @default(ACTIVE)
+  status    CategoryStatus @default(ACTIVE)
 
   // many to many relation product - category
   products Product[]
@@ -109,7 +109,7 @@ model Product {
   unit           String
   stock          Decimal
   image_url      String
-  status         product_status @default(ACTIVE)
+  status         ProductStatus @default(ACTIVE)
 
   // one vendor many products
   Vendor     Vendor      @relation(fields: [vendorId], references: [id])
@@ -125,7 +125,7 @@ model Cart {
   createdAt DateTime @default(now())
 
   total_price Decimal
-  status      cart_status @default(ACTIVE)
+  status      CartStatus @default(ACTIVE)
 
   CartItems CartItem[]
   User      User       @relation(fields: [userId], references: [id])
@@ -151,7 +151,7 @@ model Order {
   createdAt DateTime @default(now())
 
   total_price Decimal
-  status      order_status @default(PENDING)
+  status      OrderStatus @default(PENDING)
 
   // one order may have many order items
   OrderItems OrderItem[]
@@ -193,55 +193,55 @@ model Payment {
   createdAt DateTime @default(now())
 
   amount Decimal
-  status payment_status @default(PENDING)
+  status PaymentStatus @default(PENDING)
 
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
 }
 
-enum user_role {
+enum UserRole {
   ADMIN
   CUSTOMER
   VENDOR
 }
 
-enum user_status {
+enum UserStatus {
   ACTIVE
   INACTIVE
   BANNED
   DELETED
 }
 
-enum vendor_status {
+enum VendorStatus {
   PENDING
   APPROVED
   SUSPENDED
 }
 
-enum address_type {
+enum AddressType {
   BUSINESS
   SHIPPING
 }
 
-enum category_status {
+enum CategoryStatus {
   ACTIVE
   INACTIVE
 }
 
-enum product_status {
+enum ProductStatus {
   ACTIVE
   INACTIVE
   OUT_OF_STOCK
 }
 
-enum cart_status {
+enum CartStatus {
   ACTIVE // Cart is in use, items can be added or removed
   CHECKED_OUT // Cart has been converted into an order
   ABANDONED // Cart was left without checkout
   EXPIRED // Cart was abandoned and expired after a certain period
 }
 
-enum order_status {
+enum OrderStatus {
   // Order has been placed but not yet processed
   PENDING
   // Order has been confirmed by the vendor
@@ -258,7 +258,7 @@ enum order_status {
   REFUNDED
 }
 
-enum payment_status {
+enum PaymentStatus {
   PENDING
   PAID
 }
