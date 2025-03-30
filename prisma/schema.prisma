@@ -33,6 +33,8 @@ model User {
   address Address[]
   // one user may have many orders
   orders  Order[]
+  // one user may have many orders
+  carts   Cart[]
 }
 
 model Vendor {
@@ -110,11 +112,37 @@ model Product {
   status         product_status @default(ACTIVE)
 
   // one vendor many products
-  Vendor      Vendor        @relation(fields: [vendorId], references: [id])
-  vendorId    String
+  Vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  vendorId   String
   // many to many relation product - category
-  categories  Category[]
-  Order_Items Order_Items[]
+  categories Category[]
+  OrderItems OrderItem[]
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  total_price Decimal
+  status      cart_status @default(ACTIVE)
+
+  CartItems CartItem[]
+  User      User       @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  price     Decimal
+  quantity  Decimal
+  sub_total Decimal
+
+  Cart   Cart   @relation(fields: [cartId], references: [id])
+  cartId String
 }
 
 model Order {
@@ -126,20 +154,20 @@ model Order {
   status      order_status @default(PENDING)
 
   // one order may have many order items
-  OrderItems Order_Items[]
+  OrderItems OrderItem[]
   Payment    Payment?
   // one user may have many orders
-  User       User          @relation(fields: [userId], references: [id])
+  User       User        @relation(fields: [userId], references: [id])
   userId     String
   // one vendor may have many orders
-  Vendor     Vendor        @relation(fields: [vendorId], references: [id])
+  Vendor     Vendor      @relation(fields: [vendorId], references: [id])
   vendorId   String
   // Shipping/delivery address. it should be one of the customers address else the default customer address
-  Adress     Address       @relation(fields: [addressId], references: [id])
+  Adress     Address     @relation(fields: [addressId], references: [id])
   addressId  String
 }
 
-model Order_Items {
+model OrderItem {
   id        String   @id @default(uuid())
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
@@ -204,6 +232,13 @@ enum product_status {
   ACTIVE
   INACTIVE
   OUT_OF_STOCK
+}
+
+enum cart_status {
+  ACTIVE // Cart is in use, items can be added or removed
+  CHECKED_OUT // Cart has been converted into an order
+  ABANDONED // Cart was left without checkout
+  EXPIRED // Cart was abandoned and expired after a certain period
 }
 
 enum order_status {

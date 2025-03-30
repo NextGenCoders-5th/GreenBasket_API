@@ -32,6 +32,7 @@ Table user {
   vendor uuid [null, note: "Every vendor is a user, but not every user is a vendor."]
   addresses uuid [not null]
   orders uuid [null, note: " A user can place multiple orders."]
+  carts uuid [null, note: 'user can have a cart.']
 
   createDate timestamp
   updateDate timestamp
@@ -129,6 +130,47 @@ Table products {
   vendor uuid [not null, note: "The vendor selling this product."]
   category uuid [not null, note: "Category the product belongs to."]
   order_itmes uuid [null, note: 'Each order contains multiple products.']
+
+  createDate timestamp
+  updateDate timestamp
+}
+
+
+
+enum CartStatus {
+  ACTIVE          // Cart is in use, items can be added or removed
+  CHECKED_OUT     // Cart has been converted into an order
+  ABANDONED       // Cart was left without checkout
+  EXPIRED         // Cart was abandoned and expired after a certain period
+}
+
+Ref: user.carts < carts.user
+Ref: carts.cart_items < cart_items.cart
+Ref: cart_items.product - products.id
+
+Table carts {
+// The carts table tracks products added by users before they proceed to checkout.
+  id uuid [pk, not null]
+
+  user uuid [not null, note: "User who owns the cart."]
+  cart_items uuid [not null, note: "A cart contains multiple items."]
+
+  total_price float [not null, default: 0, note: "Total price of all items in the cart."]
+  status varchar [not null, default: 'active', note: "Cart status (e.g., active, checked_out, abandoned)."]
+
+  createDate timestamp
+  updateDate timestamp
+}
+
+Table cart_items {
+  id uuid [pk, not null]
+
+  cart uuid [not null, note: "Reference to the cart."]
+  product uuid [not null, note: "Product added to the cart."]
+
+  price float [not null, note: "Price per unit at the time of adding to cart."]
+  quantity integer [not null, note: "Number of units added to the cart."]
+  sub_total float [not null, note: "price * quantity."]
 
   createDate timestamp
   updateDate timestamp
