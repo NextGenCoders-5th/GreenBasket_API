@@ -12,6 +12,9 @@ import { SwaggerConfigModule } from './common/swagger/swagger.module';
 import { PinnoLoggerModule } from './common/pinno-logger/pinno-logger.module';
 import { InterceptorsModule } from './common/interceptors/interceptors.module';
 import { ConfigurationModule } from './common/configuration/configuration.module';
+import { CartModule } from './api/cart/cart.module';
+import { CartItemsModule } from './api/cart_items/cart_items.module';
+import { AuthModule } from './api/auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +32,9 @@ import { ConfigurationModule } from './common/configuration/configuration.module
     PinnoLoggerModule,
     InterceptorsModule,
     ConfigurationModule,
+    CartModule,
+    CartItemsModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
