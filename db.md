@@ -134,10 +134,14 @@ Table products {
   updateDate timestamp
 }
 
-enum order_status {
-  pending
-  delivered
-  cancelled
+export enum OrderStatus {
+  PENDING = 'pending',          // Order has been placed but not yet processed
+  CONFIRMED = 'confirmed',      // Order has been confirmed by the vendor
+  SHIPPED = 'shipped',          // Order has been shipped to the customer
+  DELIVERED = 'delivered',      // Order has been successfully delivered
+  CANCELLED = 'cancelled',      // Order was canceled before fulfillment
+  RETURNED = 'returned',        // Customer returned the order
+  REFUNDED = 'refunded',        // Payment has been refunded
 }
 Ref: user.orders < orders.user
 Ref: vendors.orders < orders.vendor
