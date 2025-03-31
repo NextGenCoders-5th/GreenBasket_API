@@ -21,11 +21,12 @@ model User {
   first_name      String
   last_name       String
   email           String
-  phone_number    String      @unique
+  phone_number    String       @unique
   password        String
   profile_picture String?
-  role            UserRole   @default(CUSTOMER)
-  status          UserStatus @default(ACTIVE)
+  role            UserRole     @default(CUSTOMER)
+  status          UserStatus   @default(ACTIVE)
+  authProvider    AuthProvider @default(EMAIL)
 
   // user may or may not be a vendor
   vendor  Vendor?
@@ -43,8 +44,8 @@ model Vendor {
   createdAt DateTime @default(now())
 
   business_name  String
-  business_email String        @unique
-  phone_number   String        @unique
+  business_email String       @unique
+  phone_number   String       @unique
   logo_url       String?
   status         VendorStatus @default(PENDING)
 
@@ -70,7 +71,7 @@ model Address {
   country    String
   latitude   String
   longitude  String
-  is_default Boolean      @default(false)
+  is_default Boolean     @default(false)
   type       AddressType
 
   // one user many addresses
@@ -88,7 +89,7 @@ model Category {
   createdAt DateTime @default(now())
 
   name      String
-  slug      String          @unique
+  slug      String         @unique
   image_url String?
   status    CategoryStatus @default(ACTIVE)
 
@@ -105,7 +106,7 @@ model Product {
   name           String
   description    String
   price          Decimal
-  descount_price Decimal?       @default(0)
+  descount_price Decimal?      @default(0)
   unit           String
   stock          Decimal
   image_url      String
@@ -210,6 +211,11 @@ enum UserStatus {
   INACTIVE
   BANNED
   DELETED
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
 }
 
 enum VendorStatus {
