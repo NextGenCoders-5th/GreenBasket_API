@@ -10,6 +10,8 @@ import { AuthenticationGuard } from './guards/authentication/authentication.guar
 import { AuthorizationGuard } from './guards/authorization/authorization.guard';
 import { BcryptProvider } from './providers/hash-password/bcrypt.provider';
 import { HashingProvider } from './providers/hash-password/hashing.provider';
+import { GenerateTokenProvider } from './providers/jwt-token/generate-token.provider';
+import { RefreshTokenProvider } from './providers/jwt-token/refresh-token.provider';
 
 @Module({
   controllers: [AuthController],
@@ -22,6 +24,8 @@ import { HashingProvider } from './providers/hash-password/hashing.provider';
       provide: HashingProvider,
       useClass: BcryptProvider,
     },
+    GenerateTokenProvider,
+    RefreshTokenProvider,
   ],
   imports: [
     ConfigModule.forFeature(jwtConfig),
