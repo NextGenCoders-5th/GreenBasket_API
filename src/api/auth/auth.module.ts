@@ -12,6 +12,9 @@ import { BcryptProvider } from './providers/hash-password/bcrypt.provider';
 import { HashingProvider } from './providers/hash-password/hashing.provider';
 import { GenerateTokenProvider } from './providers/jwt-token/generate-token.provider';
 import { RefreshTokenProvider } from './providers/jwt-token/refresh-token.provider';
+import { SignInProvider } from './providers/sign-in/sign-in.provider';
+import { SignUpProvider } from './providers/sign-up/sign-up.provider';
+import { PrismaModule } from 'src/common/prisma/prisma.module';
 
 @Module({
   controllers: [AuthController],
@@ -26,8 +29,11 @@ import { RefreshTokenProvider } from './providers/jwt-token/refresh-token.provid
     },
     GenerateTokenProvider,
     RefreshTokenProvider,
+    SignInProvider,
+    SignUpProvider,
   ],
   imports: [
+    PrismaModule,
     ConfigModule.forFeature(jwtConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
