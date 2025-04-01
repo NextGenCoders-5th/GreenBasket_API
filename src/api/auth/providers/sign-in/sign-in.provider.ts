@@ -8,6 +8,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { SignInDto } from '../../dtos/sign-in.dto';
 import { HashingProvider } from '../hash-password/hashing.provider';
 import { GenerateTokenProvider } from '../jwt-token/generate-token.provider';
+import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 
 @Injectable()
 export class SignInProvider {
@@ -69,12 +70,14 @@ export class SignInProvider {
     const { accessToken, refreshToken } =
       await this.generateTokenProvider.generateToken(user);
 
-    return {
+    return CreateApiResponse({
       status: 'success',
       message: 'signin successfull',
-      accessToken,
-      refreshToken,
-      data: user,
-    };
+      data: {
+        accessToken,
+        refreshToken,
+        user,
+      },
+    });
   }
 }
