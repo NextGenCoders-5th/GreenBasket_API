@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserByIdProvider } from './providers/crud/delete-user-by-id.provider';
 import { FindUserByIdProvider } from './providers/crud/find-user-by-id.provider';
 import { FindOneUserProvider } from './providers/find-one-user.provider';
@@ -8,6 +6,7 @@ import { FindAllUsersProvider } from './providers/crud/find-all-users.provider';
 import { UpdateUserByIdProvider } from './providers/crud/update-user-by-id.provider';
 import { CreateUserProvider } from './providers/crud/create-user.provider';
 import { User } from '@prisma/client';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {

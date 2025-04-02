@@ -17,9 +17,8 @@ import {
 import { UserRole } from '@prisma/client';
 import { Auth, Role } from '../auth/decorators';
 import { AuthType } from '../auth/enums/auth-type.enum';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Controller('users')
 export class UsersController {

@@ -8,7 +8,7 @@ import { User } from '@prisma/client';
 import { HashingProvider } from 'src/api/auth/providers/hash-password/hashing.provider';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
-import { CreateUserDto } from '../../dto/create-user.dto';
+import { CreateUserDto } from '../../dto';
 
 @Injectable()
 export class CreateUserProvider {
