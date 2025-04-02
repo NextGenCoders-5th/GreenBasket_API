@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { REQUEST_USER_KEY } from '../constants/auth.constant';
 import { IActiveUserData } from '../interfaces/active-user-data.interface';
 
-export const ActiveUser = createParamDecorator(
+const ActiveUser = createParamDecorator(
   (field: keyof IActiveUserData | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
 
@@ -12,3 +12,4 @@ export const ActiveUser = createParamDecorator(
     return field ? user?.[field] : user;
   },
 );
+export default ActiveUser;

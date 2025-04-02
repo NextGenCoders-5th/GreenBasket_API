@@ -10,11 +10,11 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignupDto } from './dtos/sign-up.dto';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
-import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
 import { Response } from 'express';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants/auth.constant';
 import { ConfigService } from '@nestjs/config';
+import { Auth } from './decorators';
 
 @Controller('auth')
 export class AuthController {
