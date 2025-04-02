@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import environmentValidation from './environment.validation';
-import { appConfig, databaseConfig, jwtConfig } from './config';
+import { appConfig, cookieConfig, databaseConfig, jwtConfig } from './config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [appConfig, databaseConfig, jwtConfig],
+      load: [appConfig, databaseConfig, jwtConfig, cookieConfig],
       validationSchema: environmentValidation,
     }),
   ],
