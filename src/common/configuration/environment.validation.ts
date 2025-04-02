@@ -8,6 +8,7 @@ export default Joi.object({
   BACKEND_URL: Joi.string().required(),
   FRONTEND_URL: Joi.string().required(),
   RESET_PASSWORD_FRONTEND_URL: Joi.string().required(),
+  DEFAULT_SYS_PASSWORD: Joi.string().required(),
 
   // database config
   DATABASE_URL: Joi.string().required(),

@@ -7,4 +7,5 @@ export default registerAs('appConfig', () => ({
   backendUrl: process.env.BACKEND_URL,
   frontendUrl: process.env.FRONTEND_URL,
   resetPasswordFrontendUrl: process.env.RESET_PASSWORD_FRONTEND_URL,
+  defaultSysPassword: process.env.DEFAULT_SYS_PASSWORD,
 }));

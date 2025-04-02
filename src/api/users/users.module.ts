@@ -8,6 +8,7 @@ import { FindOneUserProvider } from './providers/find-one-user.provider';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { CreateUserProvider } from './providers/crud/create-user.provider';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [UsersController],
@@ -20,7 +21,7 @@ import { CreateUserProvider } from './providers/crud/create-user.provider';
     FindAllUsersProvider,
     CreateUserProvider,
   ],
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   exports: [UsersService],
 })
 export class UsersModule {}

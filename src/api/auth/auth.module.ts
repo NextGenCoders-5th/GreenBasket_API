@@ -37,5 +37,6 @@ import { PrismaModule } from 'src/common/prisma/prisma.module';
     ConfigModule.forFeature(jwtConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
+  exports: [HashingProvider],
 })
 export class AuthModule {}
