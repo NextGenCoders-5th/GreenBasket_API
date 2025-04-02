@@ -1,42 +1,72 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { SignInDto } from './dtos/sign-in.dto';
+import { SignupDto } from './dtos/sign-up.dto';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { Auth } from './decorators/auth.decorator';
+import { AuthType } from './enums/auth-type.enum';
+import { Response } from 'express';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants/auth.constant';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @ApiOperation({
+    summary: 'Signup a User',
+    description: 'Signup a User. use this route to signup a new user.',
+  })
+  @ApiBody({
+    type: SignupDto,
+    required: true,
+  })
+  @Auth(AuthType.NONE)
+  @HttpCode(HttpStatus.OK)
+  @Post('sign-up')
+  signup(@Body() signupDto: SignupDto) {
+    return this.authService.signup(signupDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @ApiOperation({
+    summary: 'Signin/Login a user',
+    description: 'Signin/Login a user. use this endpoint to login a user.',
+  })
+  @ApiBody({
+    type: SignInDto,
+    required: true,
+  })
+  @Auth(AuthType.NONE)
+  @HttpCode(HttpStatus.OK)
+  @Post('sign-in')
+  async signin(
+    @Body() signinDto: SignInDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const data = await this.authService.signin(signinDto);
+    // Set access token as an HTTP-only secure cookie
+    res.cookie(ACCESS_TOKEN, data.data.accessToken, {
+      httpOnly: true,
+      secure: true, // Ensure secure (HTTPS) in production
+      maxAge: this.configService.get('cookieConfig.accessTokenExpiresIn'),
+    });
+    // Set refresh token as an HTTP-only secure cookie
+    res.cookie(REFRESH_TOKEN, data.data.refreshToken, {
+      httpOnly: true,
+      secure: true, // Ensure secure (HTTPS) in production
+      maxAge: this.configService.get('cookieConfig.refreshTokenExpiresIn'),
+    });
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return data;
   }
 }
