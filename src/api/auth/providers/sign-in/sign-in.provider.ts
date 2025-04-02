@@ -56,6 +56,13 @@ export class SignInProvider {
         `Please login via ${user.authProvider} provider.`,
       );
     }
+
+    // check if user needs to reset his password
+    if (user.need_reset_password) {
+      throw new BadRequestException(
+        'user needs to reset his password. please reset your password first and login again.',
+      );
+    }
     // check password is correct by comparing it
     const isCorrect = await this.hashingProvider.comparePassword(
       password,
