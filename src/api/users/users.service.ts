@@ -6,7 +6,8 @@ import { FindAllUsersProvider } from './providers/crud/find-all-users.provider';
 import { UpdateUserByIdProvider } from './providers/crud/update-user-by-id.provider';
 import { CreateUserProvider } from './providers/crud/create-user.provider';
 import { User } from '@prisma/client';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
+import { UpdateProfilePictureProvider } from './providers/account/update-profile-picture.provider';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,8 @@ export class UsersService {
     private readonly findOneUserProvider: FindOneUserProvider,
     private readonly findUserByIdProvider: FindUserByIdProvider,
     private readonly deleteUserByIdProvider: DeleteUserByIdProvider,
+
+    private readonly updateProfilePictureProvider: UpdateProfilePictureProvider,
   ) {}
 
   createUser(createUserDto: CreateUserDto) {
@@ -41,5 +44,16 @@ export class UsersService {
 
   findOneUser(options: Partial<User>) {
     return this.findOneUserProvider.findOneUser(options);
+  }
+
+  // account
+  updateProfilePicture(
+    id: string,
+    updateProfilePictureDto: UpdateProfilePictureDto,
+  ) {
+    return this.updateProfilePictureProvider.updateProfilePicture(
+      id,
+      updateProfilePictureDto,
+    );
   }
 }

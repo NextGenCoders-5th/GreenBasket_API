@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,22 +8,63 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
-import { Auth, Role } from '../auth/decorators';
+import { ActiveUser, Auth, Role } from '../auth/decorators';
 import { AuthType } from '../auth/enums/auth-type.enum';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileUploadService } from 'src/common/file-upload/file-upload.service';
+import { FileUploadDirNames } from 'src/lib/constants/file-upload-dir-names';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
+
+  @ApiOperation({
+    summary: 'Update user profile-picture',
+    description: 'users can use this route to update their profile picture.',
+  })
+  @ApiBody({
+    required: true,
+    type: UpdateProfilePictureDto,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
+  @UseInterceptors(
+    FileInterceptor(
+      'profilePicture',
+      FileUploadService.saveImageToStorage({
+        dirName: FileUploadDirNames.user,
+      }),
+    ),
+  )
+  @Patch('account/profile-picture')
+  updateMyProfilePicture(
+    @UploadedFile() profilePicture: Express.Multer.File,
+    @ActiveUser('sub') id: string,
+  ) {
+    if (!profilePicture) {
+      throw new BadRequestException('Profile picture is required');
+    }
+    const updateProfilePictureDto: UpdateProfilePictureDto = {
+      profilePicture: this.fileUploadService.getFilePath(profilePicture),
+    };
+    return this.usersService.updateProfilePicture(id, updateProfilePictureDto);
+  }
 
   @ApiOperation({
     summary: 'Create a User',
