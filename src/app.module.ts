@@ -15,6 +15,7 @@ import { ConfigurationModule } from './common/configuration/configuration.module
 import { CartModule } from './api/cart/cart.module';
 import { CartItemsModule } from './api/cart_items/cart_items.module';
 import { AuthModule } from './api/auth/auth.module';
+import { FileUploadModule } from './common/file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from './api/auth/auth.module';
     CartModule,
     CartItemsModule,
     AuthModule,
+    FileUploadModule,
   ],
   controllers: [],
   providers: [],
