@@ -12,6 +12,7 @@ import { UpdateUserByIdProvider } from './providers/crud/update-user-by-id.provi
 import { FindOneUserProvider } from './providers/find-one-user.provider';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
 
 @Module({
   controllers: [UsersController],
@@ -27,7 +28,7 @@ import { UsersService } from './users.service';
     UpdateUserPasswordProvider,
     UpdateProfilePictureProvider,
   ],
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, FileUploadModule],
   exports: [UsersService],
 })
 export class UsersModule {}
