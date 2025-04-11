@@ -18,8 +18,8 @@ import {
 import { UserRole } from '@prisma/client';
 import { ActiveUser, Role } from '../auth/decorators';
 import { AddressesService } from './addresses.service';
-import { CreateUserAddressDto } from './dto/create-user-address.dto';
-import { CreateVendorAddressDto } from './dto/create-vendor-address.dto';
+import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
+import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Controller('addresses')

@@ -6,8 +6,8 @@ import {
 import { Address } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
-import { CreateUserAddressDto } from '../dto/create-user-address.dto';
-import { FindOneAddressProvider } from './find-one-address.provider';
+import { CreateUserAddressDto } from '../../dto/users/create-user-address.dto';
+import { FindOneAddressProvider } from '../find-one-address.provider';
 
 @Injectable()
 export class CreateUserAddressProvider {

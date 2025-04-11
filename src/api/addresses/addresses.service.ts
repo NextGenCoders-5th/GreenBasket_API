@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Address } from '@prisma/client';
-import { CreateUserAddressDto } from './dto/create-user-address.dto';
-import { CreateVendorAddressDto } from './dto/create-vendor-address.dto';
+import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
+import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { CreateUserAddressProvider } from './providers/create-user-address.provider';
-import { CreateVendorAddressProvider } from './providers/create-vendor-address.provider';
+import { CreateUserAddressProvider } from './providers/users/create-user-address.provider';
+import { CreateVendorAddressProvider } from './providers/vendors/create-vendor-address.provider';
 import { DeleteAddressProvider } from './providers/delete-address.provider';
 import { FindAddressByIdProvider } from './providers/find-address-by-id.provider';
 import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';

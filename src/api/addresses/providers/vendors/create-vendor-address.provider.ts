@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateVendorAddressDto } from '../dto/create-vendor-address.dto';
+import { CreateVendorAddressDto } from '../../dto/vendors/create-vendor-address.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { VendorsService } from 'src/api/vendors/vendors.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
