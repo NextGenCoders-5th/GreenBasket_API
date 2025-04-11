@@ -34,12 +34,13 @@ model User {
 
   // user may or may not be a vendor
   vendor  Vendor?
-  // one user many addresses
-  address Address[]
+  // one user have one default addresses
+  address Address?
+
   // one user may have many orders
-  orders  Order[]
+  orders Order[]
   // one user may have many orders
-  carts   Cart[]
+  carts  Cart[]
 }
 
 model Vendor {
@@ -71,20 +72,20 @@ model Address {
 
   street     String
   city       String
+  sub_city   String
   zip_code   String
   country    String
-  latitude   String
-  longitude  String
-  is_default Boolean     @default(false)
-  type       AddressType
+  latitude   Decimal?
+  longitude  Decimal?
+  is_default Boolean  @default(false)
+  // type       AddressType
 
-  // one user many addresses
-  User     User?   @relation(fields: [userId], references: [id])
-  userId   String?
   // one vendor many addresses
   Vendor   Vendor? @relation(fields: [vendorId], references: [id])
   vendorId String?
   Order    Order[]
+  User     User?   @relation(fields: [userId], references: [id])
+  userId   String? @unique
 }
 
 model Category {
@@ -228,10 +229,10 @@ enum VendorStatus {
   SUSPENDED
 }
 
-enum AddressType {
-  BUSINESS
-  SHIPPING
-}
+// enum AddressType {
+//   BUSINESS
+//   SHIPPING
+// }
 
 enum CategoryStatus {
   ACTIVE
