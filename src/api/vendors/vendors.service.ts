@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { CreateVendorProvider } from './providers/create-vendor.provider';
+import { DeleteVendorProvider } from './providers/delete-vendor.provider';
 
 @Injectable()
 export class VendorsService {
-  constructor(private readonly createVendorProvider: CreateVendorProvider) {}
+  constructor(
+    private readonly createVendorProvider: CreateVendorProvider,
+    private readonly deleteVendorProvider: DeleteVendorProvider,
+  ) {}
   createVendor(createVendorDto: CreateVendorDto) {
     return this.createVendorProvider.createVendor(createVendorDto);
   }
@@ -22,7 +26,7 @@ export class VendorsService {
     return `This action updates a #${id} vendor`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} vendor`;
+  deleteVendor(id: string) {
+    return this.deleteVendorProvider.deleteVendr(id);
   }
 }
