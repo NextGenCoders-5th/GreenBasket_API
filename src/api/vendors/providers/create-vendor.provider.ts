@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Vendor } from '@prisma/client';
+import { UserRole, Vendor } from '@prisma/client';
 import { UsersService } from 'src/api/users/users.service';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
@@ -49,6 +49,11 @@ export class CreateVendorProvider {
         where: {
           OR: [{ business_email }, { phone_number }],
         },
+      });
+      // update user role to vendor
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { role: UserRole.VENDOR },
       });
     } catch (err) {
       console.log('unable to find vendor by email or phone number', err);

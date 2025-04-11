@@ -33,6 +33,8 @@ export class CreateVendorDto {
   @ApiProperty({
     description: 'business logo',
     required: true,
+    type: 'string',
+    format: 'binary',
   })
   //  for the frontend to send the file as a base64 string
   logo: string;

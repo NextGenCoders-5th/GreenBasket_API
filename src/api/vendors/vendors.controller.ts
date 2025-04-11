@@ -1,27 +1,30 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  UploadedFiles,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { VendorsService } from './vendors.service';
-import { CreateVendorDto } from './dto/create-vendor.dto';
-import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiParam,
 } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
 import { FileUploadService } from 'src/common/file-upload/file-upload.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadDirNames } from 'src/lib/constants/file-upload-dir-names';
+import { Role } from '../auth/decorators';
+import { CreateVendorDto } from './dto/create-vendor.dto';
+import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { VendorsService } from './vendors.service';
 
 @Controller('vendors')
 export class VendorsController {
@@ -39,7 +42,6 @@ export class VendorsController {
     required: true,
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBearerAuth()
   @UseInterceptors(
     FileInterceptor(
       'logo',
@@ -48,10 +50,12 @@ export class VendorsController {
       }),
     ),
   )
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
   @Post()
   create(
     @Body() createVendorDto: CreateVendorDto,
-    @UploadedFiles() logo: Express.Multer.File,
+    @UploadedFile() logo: Express.Multer.File,
   ) {
     if (!logo) {
       throw new BadRequestException('busines logo is required.');
@@ -75,8 +79,19 @@ export class VendorsController {
     return this.vendorsService.update(+id, updateVendorDto);
   }
 
+  @ApiOperation({
+    summary: 'Delete Vendor by ID',
+    description: 'use this api endpoint to delete vendor by id.',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'vendor id',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vendorsService.remove(+id);
+  deleteVendor(@Param('id') id: string) {
+    return this.vendorsService.deleteVendor(id);
   }
 }
