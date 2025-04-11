@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateVendorDto {
   @ApiProperty({
@@ -28,5 +34,15 @@ export class CreateVendorDto {
     description: 'business logo',
     required: true,
   })
+  //  for the frontend to send the file as a base64 string
+  logo: string;
+  // for the backend to save the file as a string
   logo_url: string;
+
+  @ApiProperty({
+    description: 'user id',
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  userId: string;
 }
