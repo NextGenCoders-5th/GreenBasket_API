@@ -64,9 +64,15 @@ export class VendorsController {
     return this.vendorsService.createVendor(createVendorDto);
   }
 
+  @ApiOperation({
+    summary: 'Find All Vendors.',
+    description: 'use this endpoint to find all vendors.',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
   @Get()
-  findAll() {
-    return this.vendorsService.findAll();
+  findAllVendors() {
+    return this.vendorsService.findAllVendors();
   }
 
   @Get(':id')
