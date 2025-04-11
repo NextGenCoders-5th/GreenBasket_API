@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -151,6 +153,7 @@ export class UsersController {
   @ApiBearerAuth()
   @Auth(AuthType.BEARER)
   @Role(UserRole.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUserById(id);

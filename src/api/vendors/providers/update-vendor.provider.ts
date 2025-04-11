@@ -10,6 +10,7 @@ import { Vendor } from '@prisma/client';
 import { FindOneVendorProvider } from './find-one-vendor.provider';
 import { UsersService } from 'src/api/users/users.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
+import { FileUploadService } from 'src/common/file-upload/file-upload.service';
 
 @Injectable()
 export class UpdateVendorProvider {
@@ -17,6 +18,7 @@ export class UpdateVendorProvider {
     private readonly prisma: PrismaService,
     private readonly usersService: UsersService,
     private readonly findOneVendorProvider: FindOneVendorProvider,
+    private readonly fileUploadService: FileUploadService,
   ) {}
 
   public async updateVendor(id: string, updateVendorDto: UpdateVendorDto) {
@@ -62,6 +64,11 @@ export class UpdateVendorProvider {
         'vendor already exists with the same phone number or business email. ',
       );
     }
+    // remove file if new logo uploaded then update vendor
+    if (logo_url) {
+      this.fileUploadService.removeFile(vendor.logo_url);
+    }
+
     // update vendor
     try {
       vendor = await this.prisma.vendor.update({

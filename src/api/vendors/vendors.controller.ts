@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -138,6 +140,7 @@ export class VendorsController {
   })
   @ApiBearerAuth()
   @Role(UserRole.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteVendor(@Param('id') id: string) {
     return this.vendorsService.deleteVendor(id);
