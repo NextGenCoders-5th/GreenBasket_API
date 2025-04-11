@@ -1,28 +1,63 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { AddressesService } from './addresses.service';
-import { CreateAddressDto } from './dto/create-address.dto';
-import { UpdateAddressDto } from './dto/update-address.dto';
-import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { Role } from '../auth/decorators';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
+import { ActiveUser, Role } from '../auth/decorators';
+import { AddressesService } from './addresses.service';
+import { CreateUserAddressDto } from './dto/create-user-address.dto';
+import { CreateVendorAddressDto } from './dto/create-vendor-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Controller('addresses')
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
 
-  @Post()
-  create(@Body() createAddressDto: CreateAddressDto) {
-    return this.addressesService.create(createAddressDto);
+  @ApiOperation({
+    summary: 'Create User Address',
+    description: 'use this api endpoint to create an address for user.',
+  })
+  @ApiBody({
+    type: CreateUserAddressDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Post('user')
+  createUserAddress(
+    @Body() createUserAddressDto: CreateUserAddressDto,
+    @ActiveUser('sub') userId: string,
+  ) {
+    createUserAddressDto.userId = userId;
+    return this.addressesService.createUserAddress(createUserAddressDto);
+  }
+
+  @ApiOperation({
+    summary: 'Create Vendor Address',
+    description: 'use this api endpoint to create an address for Vendor.',
+  })
+  @ApiBody({
+    type: CreateVendorAddressDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.VENDOR)
+  @Post('vendor')
+  createVendorAddress(createVendorAddressDto: CreateVendorAddressDto) {
+    return this.addressesService.createVendorAddress(createVendorAddressDto);
   }
 
   @ApiOperation({

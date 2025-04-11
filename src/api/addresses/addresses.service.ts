@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Address } from '@prisma/client';
-import { CreateAddressDto } from './dto/create-address.dto';
+import { CreateUserAddressDto } from './dto/create-user-address.dto';
+import { CreateVendorAddressDto } from './dto/create-vendor-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { CreateUserAddressProvider } from './providers/create-user-address.provider';
+import { CreateVendorAddressProvider } from './providers/create-vendor-address.provider';
+import { DeleteAddressProvider } from './providers/delete-address.provider';
+import { FindAddressByIdProvider } from './providers/find-address-by-id.provider';
 import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';
 import { FindOneAddressProvider } from './providers/find-one-address.provider';
-import { FindAddressByIdProvider } from './providers/find-address-by-id.provider';
-import { DeleteAddressProvider } from './providers/delete-address.provider';
 
 @Injectable()
 export class AddressesService {
@@ -14,9 +17,20 @@ export class AddressesService {
     private readonly findAllAddressesProvider: FindAllAddressesProvider,
     private readonly findAddressByIdProvider: FindAddressByIdProvider,
     private readonly deleteAddressProvider: DeleteAddressProvider,
+    private readonly createUserAddressProvider: CreateUserAddressProvider,
+    private readonly createVendorAddressProvider: CreateVendorAddressProvider,
   ) {}
-  create(createAddressDto: CreateAddressDto) {
-    return 'This action adds a new address';
+
+  createUserAddress(createUserAddressDto: CreateUserAddressDto) {
+    return this.createUserAddressProvider.createUserAddress(
+      createUserAddressDto,
+    );
+  }
+
+  createVendorAddress(createVendorAddressDto: CreateVendorAddressDto) {
+    return this.createVendorAddressProvider.createVendorAddress(
+      createVendorAddressDto,
+    );
   }
 
   findAllAddresses() {

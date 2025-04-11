@@ -23,5 +23,6 @@ import { UsersModule } from '../users/users.module';
     FindVendorByIdProvider,
   ],
   imports: [PrismaModule, FileUploadModule, UsersModule],
+  exports: [VendorsService],
 })
 export class VendorsModule {}
