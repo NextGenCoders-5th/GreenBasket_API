@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Address } from '@prisma/client';
 import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
+import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
 import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
-import { UpdateAddressDto } from './dto/update-address.dto';
-import { CreateUserAddressProvider } from './providers/users/create-user-address.provider';
-import { CreateVendorAddressProvider } from './providers/vendors/create-vendor-address.provider';
 import { DeleteAddressProvider } from './providers/delete-address.provider';
 import { FindAddressByIdProvider } from './providers/find-address-by-id.provider';
 import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';
 import { FindOneAddressProvider } from './providers/find-one-address.provider';
+import { CreateUserAddressProvider } from './providers/users/create-user-address.provider';
+import { UpdateUserAddressProvider } from './providers/users/update-user-address.provider';
+import { CreateVendorAddressProvider } from './providers/vendors/create-vendor-address.provider';
 
 @Injectable()
 export class AddressesService {
@@ -19,6 +20,7 @@ export class AddressesService {
     private readonly deleteAddressProvider: DeleteAddressProvider,
     private readonly createUserAddressProvider: CreateUserAddressProvider,
     private readonly createVendorAddressProvider: CreateVendorAddressProvider,
+    private readonly updateUserAddressProvider: UpdateUserAddressProvider,
   ) {}
 
   createUserAddress(createUserAddressDto: CreateUserAddressDto) {
@@ -41,8 +43,10 @@ export class AddressesService {
     return this.findAddressByIdProvider.findAddressById(id);
   }
 
-  update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
+  updateUserAddress(updateUserAddressDto: UpdateUserAddressDto) {
+    return this.updateUserAddressProvider.updateUserAddress(
+      updateUserAddressDto,
+    );
   }
 
   deleteAddressById(id: string) {
