@@ -10,7 +10,7 @@ import {
 import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { Role } from '../auth/decorators';
 import { UserRole } from '@prisma/client';
 
@@ -34,9 +34,20 @@ export class AddressesController {
     return this.addressesService.findAllAddresses();
   }
 
+  @ApiOperation({
+    summary: 'Find Address By ID',
+    description: 'use this api endpoint to find address by id.',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'address id',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.addressesService.findOne(+id);
+  findAddressById(@Param('id') id: string) {
+    return this.addressesService.findAddressById(id);
   }
 
   @Patch(':id')

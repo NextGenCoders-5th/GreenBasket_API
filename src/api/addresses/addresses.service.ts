@@ -4,12 +4,14 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';
 import { FindOneAddressProvider } from './providers/find-one-address.provider';
+import { FindAddressByIdProvider } from './providers/find-address-by-id.provider';
 
 @Injectable()
 export class AddressesService {
   constructor(
     private readonly findOneAddressProvider: FindOneAddressProvider,
     private readonly findAllAddressesProvider: FindAllAddressesProvider,
+    private readonly findAddressByIdProvider: FindAddressByIdProvider,
   ) {}
   create(createAddressDto: CreateAddressDto) {
     return 'This action adds a new address';
@@ -19,8 +21,8 @@ export class AddressesService {
     return this.findAllAddressesProvider.findAllAddresses();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
+  findAddressById(id: string) {
+    return this.findAddressByIdProvider.findAddressById(id);
   }
 
   update(id: number, updateAddressDto: UpdateAddressDto) {
