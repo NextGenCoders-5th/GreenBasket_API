@@ -20,6 +20,7 @@ model User {
 
   first_name          String?
   last_name           String?
+  // incase users dont have an email address
   email               String
   phone_number        String       @unique
   password            String
