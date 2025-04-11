@@ -50,11 +50,6 @@ export class CreateVendorProvider {
           OR: [{ business_email }, { phone_number }],
         },
       });
-      // update user role to vendor
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: { role: UserRole.VENDOR },
-      });
     } catch (err) {
       console.log('unable to find vendor by email or phone number', err);
       throw new InternalServerErrorException(
@@ -78,6 +73,11 @@ export class CreateVendorProvider {
           logo_url,
           userId,
         },
+      });
+      // update user role to vendor
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { role: UserRole.VENDOR },
       });
     } catch (err) {
       console.log('unable to create a vendor. please try again later.', err);

@@ -5,6 +5,7 @@ import { CreateVendorProvider } from './providers/create-vendor.provider';
 import { DeleteVendorProvider } from './providers/delete-vendor.provider';
 import { FindAllVendorsProvider } from './providers/find-all-vendors.provider';
 import { FindVendorByIdProvider } from './providers/find-vendor-by-id.provider';
+import { UpdateVendorProvider } from './providers/update-vendor.provider';
 
 @Injectable()
 export class VendorsService {
@@ -13,6 +14,7 @@ export class VendorsService {
     private readonly deleteVendorProvider: DeleteVendorProvider,
     private readonly findAllVendorsProvider: FindAllVendorsProvider,
     private readonly findVendorByIdProvider: FindVendorByIdProvider,
+    private readonly updateVendorProvider: UpdateVendorProvider,
   ) {}
   createVendor(createVendorDto: CreateVendorDto) {
     return this.createVendorProvider.createVendor(createVendorDto);
@@ -26,8 +28,8 @@ export class VendorsService {
     return this.findVendorByIdProvider.findVendorById(id);
   }
 
-  update(id: number, updateVendorDto: UpdateVendorDto) {
-    return `This action updates a #${id} vendor`;
+  updateVendor(id: string, updateVendorDto: UpdateVendorDto) {
+    return this.updateVendorProvider.updateVendor(id, updateVendorDto);
   }
 
   deleteVendor(id: string) {

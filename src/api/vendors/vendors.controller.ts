@@ -85,15 +85,46 @@ export class VendorsController {
     description: 'vendor id',
   })
   @ApiBearerAuth()
-  @Role(UserRole.ADMIN, UserRole.VENDOR)
+  @Role(UserRole.ADMIN)
   @Get(':id')
   findVendorById(@Param('id') id: string) {
     return this.vendorsService.findVendorById(id);
   }
 
+  @ApiOperation({
+    summary: 'Update Vendor By ID.',
+    description: 'use this endpoint to find vendor by id and update it',
+  })
+  @ApiBody({
+    required: true,
+    type: UpdateVendorDto,
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'vendor id.',
+  })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor(
+      'logo',
+      FileUploadService.saveImageToStorage({
+        dirName: FileUploadDirNames.vendor,
+      }),
+    ),
+  )
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
-    return this.vendorsService.update(+id, updateVendorDto);
+  updateVendor(
+    @Param('id') id: string,
+    @Body() updateVendorDto: UpdateVendorDto,
+    @UploadedFile() logo: Express.Multer.File,
+  ) {
+    if (logo) {
+      updateVendorDto.logo_url = this.fileUploadService.getFilePath(logo);
+    }
+    return this.vendorsService.updateVendor(id, updateVendorDto);
   }
 
   @ApiOperation({
