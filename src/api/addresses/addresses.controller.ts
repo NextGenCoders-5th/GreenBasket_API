@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -55,8 +57,20 @@ export class AddressesController {
     return this.addressesService.update(+id, updateAddressDto);
   }
 
+  @ApiOperation({
+    summary: 'Delete Address by ID',
+    description: 'Use this api endpoint to delete address by ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'address id.',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.addressesService.remove(+id);
+    return this.addressesService.deleteAddressById(id);
   }
 }
