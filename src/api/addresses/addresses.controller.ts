@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Role } from '../auth/decorators';
+import { UserRole } from '@prisma/client';
 
 @Controller('addresses')
 export class AddressesController {
@@ -12,9 +23,15 @@ export class AddressesController {
     return this.addressesService.create(createAddressDto);
   }
 
+  @ApiOperation({
+    summary: 'Find All Addresses.',
+    description: 'use this endpoint to find all addresses',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
   @Get()
-  findAll() {
-    return this.addressesService.findAll();
+  findAllAddresses() {
+    return this.addressesService.findAllAddresses();
   }
 
   @Get(':id')

@@ -1,20 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { Address } from '@prisma/client';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { Address } from '@prisma/client';
+import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';
 import { FindOneAddressProvider } from './providers/find-one-address.provider';
 
 @Injectable()
 export class AddressesService {
   constructor(
     private readonly findOneAddressProvider: FindOneAddressProvider,
+    private readonly findAllAddressesProvider: FindAllAddressesProvider,
   ) {}
   create(createAddressDto: CreateAddressDto) {
     return 'This action adds a new address';
   }
 
-  findAll() {
-    return `This action returns all addresses`;
+  findAllAddresses() {
+    return this.findAllAddressesProvider.findAllAddresses();
   }
 
   findOne(id: number) {
