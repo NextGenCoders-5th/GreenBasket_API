@@ -75,9 +75,20 @@ export class VendorsController {
     return this.vendorsService.findAllVendors();
   }
 
+  @ApiOperation({
+    summary: 'Find Vendor By ID.',
+    description: 'use this api endpoint to find vendor by id',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'vendor id',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN, UserRole.VENDOR)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vendorsService.findOne(+id);
+  findVendorById(@Param('id') id: string) {
+    return this.vendorsService.findVendorById(id);
   }
 
   @Patch(':id')
