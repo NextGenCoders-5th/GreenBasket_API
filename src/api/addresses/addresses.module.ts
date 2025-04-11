@@ -8,6 +8,7 @@ import { FindAddressByIdProvider } from './providers/find-address-by-id.provider
 import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';
 import { FindOneAddressProvider } from './providers/find-one-address.provider';
 import { UpdateAddressByIdProvider } from './providers/update-address-by-id.provider';
+import { PrismaModule } from 'src/common/prisma/prisma.module';
 
 @Module({
   controllers: [AddressesController],
@@ -21,5 +22,6 @@ import { UpdateAddressByIdProvider } from './providers/update-address-by-id.prov
     DeleteAddressProvider,
     UpdateAddressByIdProvider,
   ],
+  imports: [PrismaModule],
 })
 export class AddressesModule {}

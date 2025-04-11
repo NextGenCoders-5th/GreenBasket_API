@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { Address } from '@prisma/client';
+import { FindOneAddressProvider } from './providers/find-one-address.provider';
 
 @Injectable()
 export class AddressesService {
+  constructor(
+    private readonly findOneAddressProvider: FindOneAddressProvider,
+  ) {}
   create(createAddressDto: CreateAddressDto) {
     return 'This action adds a new address';
   }
@@ -22,5 +27,9 @@ export class AddressesService {
 
   remove(id: number) {
     return `This action removes a #${id} address`;
+  }
+
+  findOneAddress(option: Partial<Address>) {
+    return this.findOneAddressProvider.findOneAdress(option);
   }
 }
