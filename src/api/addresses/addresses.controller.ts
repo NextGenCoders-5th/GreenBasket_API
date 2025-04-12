@@ -19,13 +19,15 @@ import { UserRole } from '@prisma/client';
 import { ActiveUser, Role } from '../auth/decorators';
 import { AddressesService } from './addresses.service';
 import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
+import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
 import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
-import { UpdateAddressDto } from './dto/update-address.dto';
+import { UpdateVendorAddressDto } from './dto/vendors/update-vendor-address.dto';
 
 @Controller('addresses')
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
 
+  // createUserAddress
   @ApiOperation({
     summary: 'Create User Address',
     description: 'use this api endpoint to create an address for user.',
@@ -45,6 +47,7 @@ export class AddressesController {
     return this.addressesService.createUserAddress(createUserAddressDto);
   }
 
+  // createVendorAddress
   @ApiOperation({
     summary: 'Create Vendor Address',
     description: 'use this api endpoint to create an address for Vendor.',
@@ -60,6 +63,7 @@ export class AddressesController {
     return this.addressesService.createVendorAddress(createVendorAddressDto);
   }
 
+  // findAllAddresses
   @ApiOperation({
     summary: 'Find All Addresses.',
     description: 'use this endpoint to find all addresses',
@@ -71,6 +75,7 @@ export class AddressesController {
     return this.addressesService.findAllAddresses();
   }
 
+  // findAddressById
   @ApiOperation({
     summary: 'Find Address By ID',
     description: 'use this api endpoint to find address by id.',
@@ -87,11 +92,73 @@ export class AddressesController {
     return this.addressesService.findAddressById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
-    return this.addressesService.update(+id, updateAddressDto);
+  // updateUserAddress
+  @ApiOperation({
+    summary: 'Update User Address',
+  })
+  @ApiBody({
+    type: UpdateUserAddressDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Patch('user')
+  updateUserAddress(
+    @Body() updateUserAddressDto: UpdateUserAddressDto,
+    @ActiveUser('sub') userId: string,
+  ) {
+    updateUserAddressDto.userId = userId;
+    return this.addressesService.updateUserAddress(updateUserAddressDto);
   }
 
+  // updateVendorAddress
+  @ApiOperation({
+    summary: 'Update Vendor Address',
+  })
+  @ApiBody({
+    type: UpdateVendorAddressDto,
+    required: true,
+  })
+  @ApiParam({
+    name: 'addressId',
+    required: true,
+    description: 'address id',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.VENDOR)
+  @Patch('vendor/:addressId')
+  updateVendorAddress(
+    @Body() updateVendorAddressDto: UpdateVendorAddressDto,
+    @ActiveUser('sub') userId: string,
+  ) {
+    updateVendorAddressDto.userId = userId;
+    return this.addressesService.updateVendorAddress(updateVendorAddressDto);
+  }
+
+  // deleteVendorAddressById
+  @ApiOperation({
+    summary: 'Delete Vendor Address',
+  })
+  @ApiParam({
+    name: 'addressId',
+    required: true,
+    description: 'address id',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.VENDOR)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('vendor/:addressId')
+  deleteVendorAddressById(
+    @Param('addressId') addressId: string,
+    @ActiveUser('sub') userId: string,
+  ) {
+    return this.addressesService.deleteVendorAddressById({
+      addressId,
+      userId,
+    });
+  }
+
+  // deleteAddressById
   @ApiOperation({
     summary: 'Delete Address by ID',
     description: 'Use this api endpoint to delete address by ID.',
@@ -105,7 +172,7 @@ export class AddressesController {
   @Role(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  deleteAddressById(@Param('id') id: string) {
     return this.addressesService.deleteAddressById(id);
   }
 }
