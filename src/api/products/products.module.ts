@@ -1,9 +1,26 @@
 import { Module } from '@nestjs/common';
-import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
+import { ProductsService } from './products.service';
+import { CreateProductProvider } from './providers/create-product.provider';
+import { DeleteProductByIdProvider } from './providers/delete-product-by-id.provider';
+import { FindAllProductsProvider } from './providers/find-all-products.provider';
+import { FindOneProductProvider } from './providers/find-one-product.provider';
+import { FindProductByIdProvider } from './providers/find-product-by-id.provider';
+import { UpdateProductByIdProvider } from './providers/update-product-by-id.provider';
+import { VendorsModule } from '../vendors/vendors.module';
+import { PrismaModule } from 'src/common/prisma/prisma.module';
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [
+    ProductsService,
+    CreateProductProvider,
+    DeleteProductByIdProvider,
+    FindProductByIdProvider,
+    FindOneProductProvider,
+    FindAllProductsProvider,
+    UpdateProductByIdProvider,
+  ],
+  imports: [VendorsModule, PrismaModule],
 })
 export class ProductsModule {}
