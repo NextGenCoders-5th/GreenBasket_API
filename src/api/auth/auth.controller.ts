@@ -15,6 +15,7 @@ import { Response } from 'express';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants/auth.constant';
 import { ConfigService } from '@nestjs/config';
 import { Auth } from './decorators';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -68,5 +69,19 @@ export class AuthController {
     });
 
     return data;
+  }
+
+  @ApiOperation({
+    summary: 'Refresh Token',
+  })
+  @ApiBody({
+    type: RefreshTokenDto,
+    required: true,
+  })
+  @Auth(AuthType.NONE)
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh-token')
+  refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshTokenDto);
   }
 }
