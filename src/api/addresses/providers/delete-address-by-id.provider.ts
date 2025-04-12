@@ -4,11 +4,11 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { FindOneAddressProvider } from './find-one-address.provider';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
+import { FindOneAddressProvider } from './find-one-address.provider';
 
 @Injectable()
-export class DeleteAddressProvider {
+export class DeleteAddressByIdProvider {
   constructor(
     private readonly prisma: PrismaService,
     private readonly findOneAddressProvider: FindOneAddressProvider,
