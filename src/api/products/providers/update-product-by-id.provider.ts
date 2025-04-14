@@ -30,10 +30,14 @@ export class UpdateProductByIdProvider {
       unit,
       stock,
       categories,
+      vendorId,
     } = updateProductDto;
 
     // check if product exists
-    let product = await this.findOneProductProvider.findOneProduct({ id });
+    let product = await this.findOneProductProvider.findOneProduct({
+      id,
+      vendorId,
+    });
 
     if (!product) {
       throw new NotFoundException('product not found.');

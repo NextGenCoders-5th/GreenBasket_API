@@ -55,6 +55,8 @@ export class CreateProductDto {
 
   @ApiProperty({
     description: 'product image',
+    type: 'string',
+    format: 'binary',
   })
   @IsOptional()
   @IsString()

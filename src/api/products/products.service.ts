@@ -10,6 +10,7 @@ import {
   FindProductByIdProvider,
   UpdateProductByIdProvider,
 } from './providers';
+import { IDeleteProductById } from './interfaces/delete-product-by-id.interface';
 
 @Injectable()
 export class ProductsService {
@@ -41,8 +42,8 @@ export class ProductsService {
     );
   }
 
-  deleteProductById(id: string) {
-    return this.deleteProductByIdProvider.deleteProductById(id);
+  deleteProductById(options: IDeleteProductById) {
+    return this.deleteProductByIdProvider.deleteProductById(options);
   }
 
   findOneProduct(options: Partial<Product>) {
