@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';
@@ -20,6 +21,6 @@ import { UpdateCategoryByIdProvider } from './providers/update-category-by-id.pr
     DeleteCategoryByIdProvider,
     CreateCategoryProvider,
   ],
-  imports: [PrismaModule],
+  imports: [PrismaModule, FileUploadModule],
 })
 export class CategoriesModule {}
