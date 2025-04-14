@@ -1,12 +1,100 @@
-import { Injectable } from '@nestjs/common';
-import { UpdateProductDto } from '../dto/update-product.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { Category } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { UpdateProductDto } from '../dto/update-product.dto';
+import { FindOneProductProvider } from './find-one-product.provider';
+import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 
 @Injectable()
 export class UpdateProductByIdProvider {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly findOneProductProvider: FindOneProductProvider,
+  ) {}
+
   public async updateProductById(
     id: string,
     updateProductDto: UpdateProductDto,
-  ) {}
+  ) {
+    const {
+      name,
+      description,
+      image_url,
+      price,
+      descount_price,
+      unit,
+      stock,
+      categories,
+    } = updateProductDto;
+
+    // check if product exists
+    let product = await this.findOneProductProvider.findOneProduct({ id });
+
+    if (!product) {
+      throw new NotFoundException('product not found.');
+    }
+
+    // Validate category IDs
+    if (categories?.length) {
+      let foundCategories: Category[] | undefined;
+
+      try {
+        foundCategories = await this.prisma.category.findMany({
+          where: {
+            id: { in: categories },
+          },
+        });
+      } catch (err) {
+        console.log('createProduct: ', err);
+        throw new InternalServerErrorException(
+          'Unable to find categories. please try again later.',
+        );
+      }
+
+      const foundIds = foundCategories.map((categ) => categ.id);
+      const missingIds = categories.filter((id) => !foundIds.includes(id));
+
+      if (missingIds.length) {
+        throw new BadRequestException(
+          `Invalid category Ids, ${missingIds.join(', ')}`,
+        );
+      }
+    }
+
+    // update products
+    try {
+      product = await this.prisma.product.update({
+        where: { id },
+        data: {
+          name: name ?? product.name,
+          description: description ?? product.description,
+          image_url: image_url ?? product.image_url,
+          price: price ?? product.price,
+          descount_price: descount_price ?? product.descount_price,
+          unit: unit ?? product.unit,
+          stock: stock ?? product.stock,
+          categories: categories
+            ? { set: categories.map((id) => ({ id })) }
+            : undefined,
+        },
+        include: {
+          categories: true,
+        },
+      });
+    } catch (err) {
+      console.log('update-product: ', err);
+      throw new InternalServerErrorException('');
+    }
+
+    return CreateApiResponse({
+      status: 'success',
+      message: 'update product successfull',
+      data: product,
+    });
+  }
 }
