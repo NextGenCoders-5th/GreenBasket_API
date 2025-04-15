@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCartItemDto } from './dto/create-cart_item.dto';
 import { UpdateCartItemDto } from './dto/update-cart_item.dto';
+import {
+  CreateCartItemProvider,
+  DeleteCartItemByIdProvider,
+  FindAllCartItemsProvider,
+  FindCartItemByIdProvider,
+  FindOneCartItemProvider,
+  UpdateCartItemByIdProvider,
+} from './providers';
+import { CartItem } from '@prisma/client';
 
 @Injectable()
 export class CartItemsService {
-  create(createCartItemDto: CreateCartItemDto) {
-    return 'This action adds a new cartItem';
+  constructor(
+    private readonly createCartItemProvider: CreateCartItemProvider,
+    private readonly deleteCartItemByIdProvider: DeleteCartItemByIdProvider,
+    private readonly findAllCartItemsProvider: FindAllCartItemsProvider,
+    private readonly findCartItemByIdProvider: FindCartItemByIdProvider,
+    private readonly findOneCartItemProvider: FindOneCartItemProvider,
+    private readonly updateCartItemByIdProvider: UpdateCartItemByIdProvider,
+  ) {}
+
+  createCartItem(createCartItemDto: CreateCartItemDto) {
+    return this.createCartItemProvider.createCartItem(createCartItemDto);
   }
 
-  findAll() {
-    return `This action returns all cartItems`;
+  findAllCartItems() {
+    return this.findAllCartItemsProvider.findAllCartItems();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cartItem`;
+  findCartItemById(id: string) {
+    return this.findCartItemByIdProvider.findCartItemById(id);
   }
 
-  update(id: number, updateCartItemDto: UpdateCartItemDto) {
-    return `This action updates a #${id} cartItem`;
+  updateCartItemById(id: string, updateCartItemDto: UpdateCartItemDto) {
+    return this.updateCartItemByIdProvider.updateCartItemById(
+      id,
+      updateCartItemDto,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cartItem`;
+  deleteCartItemById(id: string) {
+    return this.deleteCartItemByIdProvider.deleteCartItemById(id);
+  }
+
+  findOneCartItem(options: Partial<CartItem>) {
+    return this.findOneCartItemProvider.findOneCartItem(options);
   }
 }

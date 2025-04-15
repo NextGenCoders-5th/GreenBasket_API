@@ -39,6 +39,5 @@ import { FileUploadModule } from './common/file-upload/file-upload.module';
     FileUploadModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule {}
