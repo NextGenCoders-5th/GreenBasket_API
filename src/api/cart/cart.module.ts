@@ -3,10 +3,11 @@ import { CartService } from './cart.service';
 import { CartController } from './cart.controller';
 import { FindOneCartProvider } from './providers/find-one-cart.provider';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
+import { CreateCartProvider } from './providers/create-cart.provider';
 
 @Module({
   controllers: [CartController],
-  providers: [CartService, FindOneCartProvider],
+  providers: [CartService, FindOneCartProvider, CreateCartProvider],
   imports: [PrismaModule],
 })
 export class CartModule {}

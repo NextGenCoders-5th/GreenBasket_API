@@ -3,12 +3,16 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { Cart } from '@prisma/client';
 import { FindOneCartProvider } from './providers/find-one-cart.provider';
+import { CreateCartProvider } from './providers/create-cart.provider';
 
 @Injectable()
 export class CartService {
-  constructor(private readonly findOneCartProvider: FindOneCartProvider) {}
-  create(createCartDto: CreateCartDto) {
-    return 'This action adds a new cart';
+  constructor(
+    private readonly findOneCartProvider: FindOneCartProvider,
+    private readonly createCartProvider: CreateCartProvider,
+  ) {}
+  createCart({ userId }: { userId: string }) {
+    return this.createCartProvider.createCart({ userId });
   }
 
   findAll() {
