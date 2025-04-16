@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CartItem } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
@@ -7,6 +7,14 @@ export class FindOneCartItemProvider {
   constructor(private readonly prisma: PrismaService) {}
 
   public async findOneCartItem(options: Partial<CartItem>) {
-    return 'findOneCartItem';
+    try {
+      const cartItem = await this.prisma.cartItem.findFirst({ where: options });
+      return cartItem;
+    } catch (err) {
+      console.log('findOneCartItem: ', err);
+      throw new InternalServerErrorException(
+        'Unable to find one cart item. please try again later.',
+      );
+    }
   }
 }

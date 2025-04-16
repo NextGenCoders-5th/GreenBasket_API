@@ -123,6 +123,7 @@ model Product {
   // many to many relation product - category
   categories Category[]
   OrderItems OrderItem[]
+  CartItem   CartItem[]
 }
 
 model Cart {
@@ -130,7 +131,7 @@ model Cart {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
-  total_price Decimal
+  total_price Decimal    @default(0)
   status      CartStatus @default(ACTIVE)
 
   CartItems CartItem[]
@@ -146,6 +147,9 @@ model CartItem {
   price     Decimal
   quantity  Decimal
   sub_total Decimal
+
+  Product   Product @relation(fields: [productId], references: [id])
+  productId String
 
   Cart   Cart   @relation(fields: [cartId], references: [id])
   cartId String
