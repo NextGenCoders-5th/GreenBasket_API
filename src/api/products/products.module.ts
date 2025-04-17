@@ -23,5 +23,6 @@ import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
     UpdateProductByIdProvider,
   ],
   imports: [VendorsModule, PrismaModule, FileUploadModule],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

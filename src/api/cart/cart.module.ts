@@ -9,5 +9,6 @@ import { CreateCartProvider } from './providers/create-cart.provider';
   controllers: [CartController],
   providers: [CartService, FindOneCartProvider, CreateCartProvider],
   imports: [PrismaModule],
+  exports: [CartService],
 })
 export class CartModule {}

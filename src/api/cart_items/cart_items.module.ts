@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
+import { CartModule } from '../cart/cart.module';
+import { ProductsModule } from '../products/products.module';
 import { CartItemsController } from './cart_items.controller';
 import { CartItemsService } from './cart_items.service';
 import { CreateCartItemProvider } from './providers/create-cart-item.provider';
@@ -20,6 +22,6 @@ import { UpdateCartItemByIdProvider } from './providers/update-cart-item-by-id.p
     DeleteCartItemByIdProvider,
     CreateCartItemProvider,
   ],
-  imports: [PrismaModule],
+  imports: [PrismaModule, ProductsModule, CartModule],
 })
 export class CartItemsModule {}
