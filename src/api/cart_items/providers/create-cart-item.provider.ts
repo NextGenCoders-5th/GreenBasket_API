@@ -47,6 +47,13 @@ export class CreateCartItemProvider {
           productId: product.id,
         },
       });
+      // update cart total
+      await this.prisma.cart.update({
+        where: { id: cart.id },
+        data: {
+          total_price: cart.total_price.add(cartItem.sub_total),
+        },
+      });
     } catch (err) {
       console.log('createCartItem: ', err);
       throw new InternalServerErrorException(
