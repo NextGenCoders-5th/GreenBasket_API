@@ -1,19 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID, Min } from 'class-validator';
 
 export class CreateCartItemDto {
-  @ApiProperty({
-    description: 'price per unit',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  price: number;
-
   @ApiProperty({
     description: 'quantity of the cart item',
   })
   @IsNotEmpty()
   @IsNumber()
+  @Min(1, { message: 'quantity must be greater than 0' })
   quantity: number;
 
   @ApiProperty({

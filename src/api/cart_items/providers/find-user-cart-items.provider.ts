@@ -3,25 +3,29 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 
 @Injectable()
-export class FindAllCartItemsProvider {
+export class FindUserCartItemsProvider {
   constructor(private readonly prisma: PrismaService) {}
 
-  public async findAllCartItems() {
+  public async findUserCartItems(userId: string) {
     try {
       const cartItems = await this.prisma.cartItem.findMany({
+        where: {
+          Cart: {
+            userId,
+          },
+        },
         include: {
-          Cart: true,
           Product: true,
         },
       });
 
       return CreateApiResponse({
         status: 'success',
-        message: 'find all cart items successfully.',
+        message: 'find cart items successfull.',
         data: cartItems,
       });
     } catch (err) {
-      console.log('findAllCartItems: ', err);
+      console.log('findUserCartItems: ', err);
       throw new InternalServerErrorException(
         'Unable to find cart items. please try again later.',
       );

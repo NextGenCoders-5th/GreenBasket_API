@@ -19,7 +19,7 @@ export class CreateCartItemProvider {
   ) {}
 
   public async createCartItem(createCartItemDto: CreateCartItemDto) {
-    const { price, productId, quantity, userId } = createCartItemDto;
+    const { productId, quantity, userId } = createCartItemDto;
     // check if product id exists
     const product = await this.productsService.findOneProduct({
       id: productId,
@@ -40,9 +40,9 @@ export class CreateCartItemProvider {
     try {
       cartItem = await this.prisma.cartItem.create({
         data: {
-          price,
+          price: product.price,
           quantity,
-          sub_total: Number((price * quantity).toFixed(2)),
+          sub_total: product.price.mul(quantity),
           cartId: cart.id,
           productId: product.id,
         },

@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { DecimalInterceptor } from './common/interceptors/serialize-prisma-decimals/decimal.interceptor';
 import { SwaggerConfigModule } from './common/swagger/swagger.module';
 
 async function bootstrap() {
@@ -31,15 +32,14 @@ async function bootstrap() {
   // global interceptors
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)), // Apply ClassSerializerInterceptor globally
+    new DecimalInterceptor(),
   );
 
   // enable cors
-  app.enableCors(
-    {
-      origin: 'http://localhost:3000',
-      credentials: true,
-    },
-  );
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
   app.use(cookieParser());
   app.use(helmet());
 

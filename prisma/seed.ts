@@ -9,7 +9,9 @@ const prisma = new PrismaClient();
 async function main() {
   const admin = await prisma.user.upsert({
     where: { phone_number: '+251908005801' },
-    update: {},
+    update: {
+      role: UserRole.ADMIN,
+    },
     create: {
       email: 'admin@test.com',
       password: await bcrypt.hash('adminpassword', 10),
@@ -26,7 +28,9 @@ async function main() {
 
   const user = await prisma.user.upsert({
     where: { phone_number: '+251948006129' },
-    update: {},
+    update: {
+      role: UserRole.CUSTOMER,
+    },
     create: {
       email: 'test@test.com',
       password: await bcrypt.hash('test1234', 10),
@@ -44,7 +48,9 @@ async function main() {
   // create a vendor
   const vendorOwner = await prisma.user.upsert({
     where: { phone_number: '+251908005802' },
-    update: {},
+    update: {
+      role: UserRole.VENDOR,
+    },
     create: {
       email: 'vendor@test.com',
       password: await bcrypt.hash('test1234', 10),

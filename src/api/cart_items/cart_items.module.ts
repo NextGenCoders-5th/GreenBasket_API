@@ -10,6 +10,7 @@ import { FindAllCartItemsProvider } from './providers/find-all-cart-items.provid
 import { FindCartItemByIdProvider } from './providers/find-cart-item-by-id.provider';
 import { FindOneCartItemProvider } from './providers/find-one-cart-item.provider';
 import { UpdateCartItemByIdProvider } from './providers/update-cart-item-by-id.provider';
+import { FindUserCartItemsProvider } from './providers/find-user-cart-items.provider';
 
 @Module({
   controllers: [CartItemsController],
@@ -21,6 +22,7 @@ import { UpdateCartItemByIdProvider } from './providers/update-cart-item-by-id.p
     UpdateCartItemByIdProvider,
     DeleteCartItemByIdProvider,
     CreateCartItemProvider,
+    FindUserCartItemsProvider,
   ],
   imports: [PrismaModule, ProductsModule, CartModule],
 })
