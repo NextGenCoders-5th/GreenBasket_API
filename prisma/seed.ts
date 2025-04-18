@@ -41,8 +41,85 @@ async function main() {
     },
   });
 
+  // create a vendor
+  const vendorOwner = await prisma.user.upsert({
+    where: { phone_number: '+251908005802' },
+    update: {},
+    create: {
+      email: 'vendor@test.com',
+      password: await bcrypt.hash('test1234', 10),
+      phone_number: '+251908005802',
+      need_reset_password: false,
+      first_name: 'VAbebe',
+      last_name: 'Kebede',
+      role: UserRole.VENDOR,
+      is_onboarding: false,
+      profile_picture:
+        'https://res.cloudinary.com/dvp1mjhd9/image/upload/v1714690850/default_profile_image.png',
+    },
+  });
+
+  const busines = await prisma.vendor.upsert({
+    where: {
+      business_email: 'busines@test.com',
+      phone_number: '+251908005802',
+    },
+    update: {},
+    create: {
+      business_email: 'busines@test.com',
+      phone_number: '+251908005802',
+      business_name: 'Test Business',
+      logo_url:
+        'https://res.cloudinary.com/dvp1mjhd9/image/upload/v1744938281/ysmaqbtkrwaftn40j6i2.png',
+      status: 'APPROVED',
+      userId: vendorOwner.id,
+    },
+  });
+
+  // create category
+  const category = await prisma.category.upsert({
+    where: { slug: 'test_category' },
+    update: {},
+    create: {
+      name: 'Test Category',
+      slug: 'test_category',
+    },
+  });
+
+  // create 2 products
+  const product1 = await prisma.product.create({
+    data: {
+      name: 'Test Product 1',
+      description: 'Test Product 1 Description',
+      price: 100,
+      unit: 'kg',
+      stock: 100,
+      vendorId: busines.id,
+      image_url:
+        'https://res.cloudinary.com/dvp1mjhd9/image/upload/v1744938280/axrcyeudhipiu0e1mvem.jpg',
+    },
+  });
+
+  const product2 = await prisma.product.create({
+    data: {
+      name: 'Test Product 2',
+      description: 'Test Product 2 Description',
+      price: 200,
+      unit: 'kg',
+      stock: 100,
+      vendorId: busines.id,
+      image_url:
+        'https://res.cloudinary.com/dvp1mjhd9/image/upload/v1744938280/d8fbhim9ixedbebaxf28.jpg',
+    },
+  });
+
   console.log('admin: ', admin);
   console.log('user: ', user);
+  console.log('vendorOwner: ', vendorOwner);
+  console.log('busines: ', busines);
+  console.log('category: ', category);
+  console.log('product1: ', product1);
+  console.log('product2: ', product2);
 }
 
 // execute the main function
