@@ -3,12 +3,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/common/prisma/prisma.service';
-import { CreateCartItemDto } from '../dto/create-cart_item.dto';
-import { ProductsService } from 'src/api/products/products.service';
-import { CartService } from 'src/api/cart/cart.service';
 import { CartItem } from '@prisma/client';
+import { CartService } from 'src/api/cart/cart.service';
+import { ProductsService } from 'src/api/products/products.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
+import { CreateCartItemDto } from '../dto/create-cart_item.dto';
+import { FindOneCartItemProvider } from './find-one-cart-item.provider';
 
 @Injectable()
 export class CreateCartItemProvider {
@@ -16,6 +17,7 @@ export class CreateCartItemProvider {
     private readonly prisma: PrismaService,
     private readonly productsService: ProductsService,
     private readonly cartService: CartService,
+    private readonly findOneCartItemProvider: FindOneCartItemProvider,
   ) {}
 
   public async createCartItem(createCartItemDto: CreateCartItemDto) {
@@ -37,22 +39,42 @@ export class CreateCartItemProvider {
     }
     // create cart item
     let cartItem: CartItem | undefined;
+    // check if that product is already added to the cart if so update the quantity
+    cartItem = await this.findOneCartItemProvider.findOneCartItem({
+      productId,
+      cartId: cart.id,
+    });
+
     try {
-      cartItem = await this.prisma.cartItem.create({
-        data: {
-          price: product.price,
-          quantity,
-          sub_total: product.price.mul(quantity),
-          cartId: cart.id,
-          productId: product.id,
-        },
-      });
-      // update cart total
-      await this.prisma.cart.update({
-        where: { id: cart.id },
-        data: {
-          total_price: cart.total_price.add(cartItem.sub_total),
-        },
+      // start transaction
+      await this.prisma.$transaction(async (prisma) => {
+        if (!cartItem) {
+          // else create a new cart item
+          cartItem = await prisma.cartItem.create({
+            data: {
+              price: product.price,
+              quantity,
+              sub_total: product.price.mul(quantity),
+              cartId: cart.id,
+              productId: product.id,
+            },
+          });
+        } else {
+          cartItem = await prisma.cartItem.update({
+            where: { id: cartItem.id },
+            data: {
+              quantity: cartItem.quantity.add(quantity),
+              sub_total: cartItem.sub_total.add(product.price.mul(quantity)),
+            },
+          });
+        }
+        // update cart total
+        await prisma.cart.update({
+          where: { id: cart.id },
+          data: {
+            total_price: cart.total_price.add(cartItem.sub_total),
+          },
+        });
       });
     } catch (err) {
       console.log('createCartItem: ', err);
