@@ -17,4 +17,14 @@ export class CartController {
   findMyCart(@ActiveUser('sub') userId: string) {
     return this.cartService.findMyCart(userId);
   }
+
+  @ApiOperation({
+    summary: 'Get all my carts',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Get('my-carts')
+  findMyCarts(@ActiveUser('sub') userId: string) {
+    return this.cartService.findMyCarts(userId);
+  }
 }

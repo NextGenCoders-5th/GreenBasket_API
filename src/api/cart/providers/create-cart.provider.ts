@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { FindOneCartProvider } from './find-one-cart.provider';
+import { CartStatus } from '@prisma/client';
 
 @Injectable()
 export class CreateCartProvider {
@@ -12,6 +13,7 @@ export class CreateCartProvider {
   public async createCart({ userId }: { userId: string }) {
     let cart = await this.findOneCartProvider.findOneCart({
       userId,
+      status: CartStatus.ACTIVE,
     });
 
     if (cart) return cart;

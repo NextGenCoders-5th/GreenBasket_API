@@ -5,10 +5,17 @@ import { FindOneCartProvider } from './providers/find-one-cart.provider';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { CreateCartProvider } from './providers/create-cart.provider';
 import { FindMyCartProvider } from './providers/find-my-cart.provider';
+import { FindMyCartsProvider } from './providers/find-my-carts.provider';
 
 @Module({
   controllers: [CartController],
-  providers: [CartService, FindOneCartProvider, CreateCartProvider, FindMyCartProvider],
+  providers: [
+    CartService,
+    FindOneCartProvider,
+    CreateCartProvider,
+    FindMyCartProvider,
+    FindMyCartsProvider,
+  ],
   imports: [PrismaModule],
   exports: [CartService],
 })
