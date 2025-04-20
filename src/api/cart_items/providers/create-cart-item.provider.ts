@@ -47,10 +47,10 @@ export class CreateCartItemProvider {
 
     try {
       // start transaction
-      await this.prisma.$transaction(async (prisma) => {
+      await this.prisma.$transaction(async (tx) => {
         if (!cartItem) {
           // else create a new cart item
-          cartItem = await prisma.cartItem.create({
+          cartItem = await tx.cartItem.create({
             data: {
               price: product.price,
               quantity,
@@ -60,7 +60,7 @@ export class CreateCartItemProvider {
             },
           });
         } else {
-          cartItem = await prisma.cartItem.update({
+          cartItem = await tx.cartItem.update({
             where: { id: cartItem.id },
             data: {
               quantity: cartItem.quantity.add(quantity),
@@ -69,7 +69,7 @@ export class CreateCartItemProvider {
           });
         }
         // update cart total
-        await prisma.cart.update({
+        await tx.cart.update({
           where: { id: cart.id },
           data: {
             total_price: cart.total_price.add(cartItem.sub_total),

@@ -62,7 +62,7 @@ model Vendor {
   // one vendor many products
   products Product[]
   // one vendor may have many orders
-  orders   Order[]
+  // orders   Order[]
 }
 
 model Address {
@@ -138,7 +138,7 @@ model Cart {
   user      User       @relation(fields: [userId], references: [id])
   userId    String
 
-  Order Order[]
+  Order Order?
 }
 
 model CartItem {
@@ -170,17 +170,17 @@ model Order {
   reviewed    Boolean     @default(false)
 
   cart   Cart   @relation(fields: [cartId], references: [id])
-  cartId String
+  cartId String @unique
 
-  // one order may have many order items
+  // ensures only one order can ever exist for a cart
   OrderItems OrderItem[]
   Payment    Payment?
   // one user may have many orders
   User       User        @relation(fields: [userId], references: [id])
   userId     String
   // one vendor may have many orders
-  Vendor     Vendor      @relation(fields: [vendorId], references: [id])
-  vendorId   String
+  // Vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  // vendorId   String
   // Shipping/delivery address. it should be one of the customers address else the default customer address
   Adress     Address     @relation(fields: [addressId], references: [id])
   addressId  String
@@ -211,8 +211,9 @@ model Payment {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
-  amount Decimal
-  status PaymentStatus @default(PENDING)
+  amount        Decimal
+  status        PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod
 
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
@@ -285,4 +286,12 @@ enum OrderStatus {
 enum PaymentStatus {
   PENDING
   PAID
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+  WALLET
 }

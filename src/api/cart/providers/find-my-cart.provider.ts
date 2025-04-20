@@ -15,7 +15,7 @@ export class FindMyCartProvider {
     let cart: Cart;
 
     try {
-      cart = await this.prisma.cart.findUnique({
+      cart = await this.prisma.cart.findFirst({
         where: { userId, status: CartStatus.ACTIVE },
         include: {
           CartItems: {
