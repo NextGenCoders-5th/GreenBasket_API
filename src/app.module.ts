@@ -18,6 +18,7 @@ import { InterceptorsModule } from './common/interceptors/interceptors.module';
 import { PinnoLoggerModule } from './common/pinno-logger/pinno-logger.module';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { SwaggerConfigModule } from './common/swagger/swagger.module';
+import { ReviewsModule } from './api/reviews/reviews.module';
 
 @Module({
   imports: [
@@ -47,6 +48,8 @@ import { SwaggerConfigModule } from './common/swagger/swagger.module';
         secretKey: configService.get('paymentConfig.chapaSecretKey'),
       }),
     }),
+
+    ReviewsModule,
   ],
   controllers: [],
 })

@@ -173,7 +173,6 @@ model Order {
   shippedAt   DateTime?
   deliveredAt DateTime?
   receivedAt  DateTime?
-  reviewed    Boolean     @default(false)
 
   cart   Cart   @relation(fields: [cartId], references: [id])
   cartId String
@@ -203,6 +202,7 @@ model OrderItem {
   quantity  Decimal
   // price * quantity.
   sub_total Decimal
+  reviewed  Boolean @default(false)
 
   // one order may have many order items
   Order     Order   @relation(fields: [orderId], references: [id])
@@ -211,7 +211,7 @@ model OrderItem {
   Product   Product @relation(fields: [productId], references: [id])
   productId String
 
-  review Review?
+  Review Review?
 }
 
 model Payment {
@@ -240,8 +240,8 @@ model Review {
   userId      String
   orderItemId String @unique
 
-  user      User      @relation(fields: [userId], references: [id])
-  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+  User      User      @relation(fields: [userId], references: [id])
+  OrderItem OrderItem @relation(fields: [orderItemId], references: [id])
 
   @@unique([userId, orderItemId], name: "unique_user_order_item")
 }
