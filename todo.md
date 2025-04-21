@@ -11,3 +11,5 @@
   - [] Add tracking_number or shipping provider fields.
   - [] Add note field for buyer instructions.
 - [] Add analytics tables later (e.g., product views, abandoned carts).
+- [] Add a wishlist table for users to save products for later.
+- [] Add a reviews table for users to leave feedback on products.

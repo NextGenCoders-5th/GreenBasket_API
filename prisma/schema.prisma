@@ -41,6 +41,7 @@ model User {
   orders Order[]
   // one user may have many orders
   cart   Cart[]
+  Review Review[]
 }
 
 model Vendor {
@@ -209,6 +210,8 @@ model OrderItem {
   // one order item will have one product
   Product   Product @relation(fields: [productId], references: [id])
   productId String
+
+  review Review?
 }
 
 model Payment {
@@ -224,6 +227,23 @@ model Payment {
 
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rating  Int
+  comment String?
+
+  userId      String
+  orderItemId String @unique
+
+  user      User      @relation(fields: [userId], references: [id])
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+
+  @@unique([userId, orderItemId], name: "unique_user_order_item")
 }
 
 enum UserRole {
