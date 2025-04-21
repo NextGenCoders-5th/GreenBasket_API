@@ -62,7 +62,7 @@ model Vendor {
   // one vendor many products
   products Product[]
   // one vendor may have many orders
-  // orders   Order[]
+  orders   Order[]
 }
 
 model Address {
@@ -111,11 +111,12 @@ model Product {
   name           String
   description    String
   price          Decimal
-  descount_price Decimal?      @default(0)
+  discount_price Decimal?      @default(0)
   unit           String
-  stock          Decimal
+  stock          Int
   image_url      String
   status         ProductStatus @default(ACTIVE)
+  is_featured    Boolean       @default(false)
 
   // one vendor many products
   Vendor     Vendor      @relation(fields: [vendorId], references: [id])
@@ -138,7 +139,8 @@ model Cart {
   user      User       @relation(fields: [userId], references: [id])
   userId    String
 
-  Order Order?
+  // multi-vendor marketplace, the checkout flow needs to split the cart by vendor, and create separate orders per vendor
+  Order Order[]
 }
 
 model CartItem {
@@ -155,6 +157,9 @@ model CartItem {
 
   Cart   Cart   @relation(fields: [cartId], references: [id])
   cartId String
+
+  // NOTE: In a cart system, a user should not be able to add the same product twice to the cart as separate entries — instead, the quantity should just increase.
+  @@unique([cartId, productId], name: "unique_cart_product")
 }
 
 model Order {
@@ -170,7 +175,7 @@ model Order {
   reviewed    Boolean     @default(false)
 
   cart   Cart   @relation(fields: [cartId], references: [id])
-  cartId String @unique
+  cartId String
 
   // ensures only one order can ever exist for a cart
   OrderItems OrderItem[]
@@ -179,8 +184,8 @@ model Order {
   User       User        @relation(fields: [userId], references: [id])
   userId     String
   // one vendor may have many orders
-  // Vendor     Vendor      @relation(fields: [vendorId], references: [id])
-  // vendorId   String
+  vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  vendorId   String
   // Shipping/delivery address. it should be one of the customers address else the default customer address
   Adress     Address     @relation(fields: [addressId], references: [id])
   addressId  String
