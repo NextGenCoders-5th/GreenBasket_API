@@ -149,7 +149,7 @@ model CartItem {
   createdAt DateTime @default(now())
 
   price     Decimal
-  quantity  Decimal
+  quantity  Int
   sub_total Decimal
 
   Product   Product @relation(fields: [productId], references: [id])

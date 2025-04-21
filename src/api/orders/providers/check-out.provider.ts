@@ -21,7 +21,9 @@ export class CheckOutProvider {
     const { cartId, userId, addressId } = checOutDto;
     // fetch cart and cart item
     let cart: Prisma.CartGetPayload<{
-      include: { CartItems: { include: { Product: true } } };
+      include: {
+        CartItems: { include: { Product: { include: { Vendor: true } } } };
+      };
     }>;
 
     try {
@@ -34,7 +36,11 @@ export class CheckOutProvider {
         include: {
           CartItems: {
             include: {
-              Product: true,
+              Product: {
+                include: {
+                  Vendor: true,
+                },
+              },
             },
           },
         },
@@ -91,7 +97,7 @@ export class CheckOutProvider {
     // stock validation
     const outOfStack: string[] = [];
     for (const item of cart.CartItems) {
-      if (item.Product.stock.toNumber() < item.quantity.toNumber()) {
+      if (item.Product.stock < item.quantity) {
         outOfStack.push(item.Product.name);
       }
     }
@@ -102,63 +108,79 @@ export class CheckOutProvider {
       );
     }
 
-    // calculate total price
-    const totalPrice = cart.CartItems.reduce((acc, item) => {
-      return acc + item.sub_total.toNumber();
-    }, 0);
-
     try {
-      // Create an order and order items
-      const order = await this.prisma.$transaction(async (tx) => {
-        const createdOrder = await tx.order.create({
-          data: {
-            total_price: totalPrice,
-            addressId,
-            userId,
-            cartId,
-            OrderItems: {
-              create: cart.CartItems.map((item) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                price: item.price,
-                sub_total: item.sub_total,
-              })),
-            },
+      const createdOrders = await this.prisma.$transaction(async (tx) => {
+        const groupedByVendor = cart.CartItems.reduce(
+          (acc, item) => {
+            const vendorId = item.Product.vendorId;
+            if (!acc[vendorId]) acc[vendorId] = [];
+            acc[vendorId].push(item);
+            return acc;
           },
-          include: {
-            Adress: true,
-            OrderItems: true,
-          },
-        });
+          {} as Record<string, typeof cart.CartItems>,
+        );
 
-        // update cart status to CHECKED_OUT
+        const orders = await Promise.all(
+          Object.entries(groupedByVendor).map(async ([vendorId, items]) => {
+            const vendorTotalPrice = items.reduce((acc, item) => {
+              return acc + item.sub_total.toNumber();
+            }, 0);
+
+            // create order for each vendor
+            const createdOrder = await tx.order.create({
+              data: {
+                total_price: vendorTotalPrice,
+                addressId,
+                userId,
+                cartId,
+                vendorId,
+                OrderItems: {
+                  create: items.map((item) => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    price: item.price,
+                    sub_total: item.sub_total,
+                  })),
+                },
+              },
+              include: {
+                Adress: true,
+                OrderItems: true,
+              },
+            });
+
+            // Update product stock in parallel
+            await Promise.all(
+              items.map(async (item) => {
+                return await tx.product.update({
+                  where: { id: item.productId },
+                  data: {
+                    stock: {
+                      decrement: item.quantity,
+                    },
+                  },
+                });
+              }),
+            );
+
+            return createdOrder;
+          }),
+        );
+
+        // Update cart status
         await tx.cart.update({
           where: { id: cartId },
           data: { status: CartStatus.CHECKED_OUT },
         });
 
-        // update product stock
-        await Promise.all(
-          cart.CartItems.map(async (item) => {
-            return await tx.product.update({
-              where: { id: item.productId },
-              data: {
-                stock: {
-                  decrement: item.quantity,
-                },
-              },
-            });
-          }),
-        );
-
-        return createdOrder;
+        return orders;
       });
 
       // return response
       return CreateApiResponse({
         status: 'success',
         message: 'Order created successfully.',
-        data: order,
+        data: createdOrders,
       });
     } catch (err) {
       console.log('check out', err);
