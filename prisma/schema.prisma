@@ -220,6 +220,7 @@ model Payment {
   status        PaymentStatus @default(PENDING)
   paymentMethod PaymentMethod
   reference     String        @unique
+  paidAt        DateTime?
 
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
