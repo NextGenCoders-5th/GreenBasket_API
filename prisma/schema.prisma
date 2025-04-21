@@ -219,6 +219,7 @@ model Payment {
   amount        Decimal
   status        PaymentStatus @default(PENDING)
   paymentMethod PaymentMethod
+  reference     String        @unique
 
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
@@ -294,9 +295,8 @@ enum PaymentStatus {
 }
 
 enum PaymentMethod {
-  CREDIT_CARD
-  PAYPAL
   BANK_TRANSFER
   CASH_ON_DELIVERY
-  WALLET
+  STRIPE
+  CHAPA
 }

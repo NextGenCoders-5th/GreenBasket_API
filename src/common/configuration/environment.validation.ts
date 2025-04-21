@@ -23,4 +23,9 @@ export default Joi.object({
   // cookie config
   COOKIE_ACCESS_TOKEN_EXPIRES_IN: Joi.number().required(),
   COOKIE_REFRESH_TOKEN_EXPIRES_IN: Joi.number().required(),
+
+  // chapa payment get way
+  CHAPA_WEBHOOK_URL: Joi.string().required(),
+  CHAPA_WEBHOOK_SECRET: Joi.string().required(),
+  CHAPA_SECRET_KEY: Joi.string().required(),
 });
