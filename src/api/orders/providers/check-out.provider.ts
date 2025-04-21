@@ -52,9 +52,8 @@ export class CheckOutProvider {
       );
     }
     // check if cart is empty
-    if (!cart || !cart.CartItems.length) {
-      throw new NotFoundException('Cart not found or empty.');
-    }
+    if (!cart) throw new NotFoundException('Cart not found.');
+    if (!cart.CartItems.length) throw new BadRequestException('Cart is empty.');
 
     // check if address is valid
     const address = await this.addressesService.findOneAddress({
@@ -151,16 +150,16 @@ export class CheckOutProvider {
 
             // Update product stock in parallel
             await Promise.all(
-              items.map(async (item) => {
-                return await tx.product.update({
+              items.map(async (item) =>
+                tx.product.update({
                   where: { id: item.productId },
                   data: {
                     stock: {
                       decrement: item.quantity,
                     },
                   },
-                });
-              }),
+                }),
+              ),
             );
 
             return createdOrder;
