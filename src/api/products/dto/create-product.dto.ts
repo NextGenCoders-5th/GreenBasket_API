@@ -37,7 +37,7 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  descount_price: number;
+  discount_price: number;
 
   @ApiProperty({
     description: 'Measurement unit (e.g., kg, lb, bunch).',
@@ -51,7 +51,7 @@ export class CreateProductDto {
   })
   @IsNotEmpty()
   @IsNumber()
-  stock: string;
+  stock: number;
 
   @ApiProperty({
     description: 'product image',

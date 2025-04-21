@@ -26,7 +26,7 @@ export class UpdateProductByIdProvider {
       description,
       image_url,
       price,
-      descount_price,
+      discount_price,
       unit,
       stock,
       categories,
@@ -79,7 +79,7 @@ export class UpdateProductByIdProvider {
           description: description ?? product.description,
           image_url: image_url ?? product.image_url,
           price: price ?? product.price,
-          descount_price: descount_price ?? product.descount_price,
+          discount_price: discount_price ?? product.discount_price,
           unit: unit ?? product.unit,
           stock: stock ?? product.stock,
           categories: categories

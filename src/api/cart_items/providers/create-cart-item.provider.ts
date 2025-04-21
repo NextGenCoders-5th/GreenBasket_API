@@ -63,7 +63,7 @@ export class CreateCartItemProvider {
           cartItem = await tx.cartItem.update({
             where: { id: cartItem.id },
             data: {
-              quantity: cartItem.quantity.add(quantity),
+              quantity: { increment: quantity },
               sub_total: cartItem.sub_total.add(product.price.mul(quantity)),
             },
           });

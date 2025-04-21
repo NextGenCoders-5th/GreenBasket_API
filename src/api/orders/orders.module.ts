@@ -11,6 +11,8 @@ import { FindAllOrdersProvider } from './providers/find-all-orders.provider';
 import { FindAllVendorOrdersProvider } from './providers/find-all-vendor-orders.provider';
 import { FindOrderByIdProvider } from './providers/find-order-by-id.provider';
 import { UpdateOrderStatusByIdProvider } from './providers/update-order-status-by-id.provider';
+import { FindOneOrderProvider } from './providers/find-one-order.provider';
+import { VendorsModule } from '../vendors/vendors.module';
 
 @Module({
   controllers: [OrdersController],
@@ -23,7 +25,9 @@ import { UpdateOrderStatusByIdProvider } from './providers/update-order-status-b
     FindAllVendorOrdersProvider,
     FindOrderByIdProvider,
     UpdateOrderStatusByIdProvider,
+    FindOneOrderProvider,
   ],
-  imports: [PrismaModule, CartModule, AddressesModule],
+  imports: [PrismaModule, CartModule, AddressesModule, VendorsModule],
+  exports: [OrdersService],
 })
 export class OrdersModule {}
