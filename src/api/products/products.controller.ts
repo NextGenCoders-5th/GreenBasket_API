@@ -8,6 +8,8 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -124,7 +126,17 @@ export class ProductsController {
     return this.productsService.updateProductById(id, updateProductDto);
   }
 
+  @ApiOperation({
+    summary: 'Delete Product by ID',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'product id',
+    required: true,
+  })
+  @ApiBearerAuth()
   @Role(UserRole.VENDOR)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteProductById(
     @Param('id') id: string,
