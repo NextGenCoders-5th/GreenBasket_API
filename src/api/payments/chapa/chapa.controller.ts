@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ChapaService } from './chapa.service';
 import { InitializeOrderPaymentDto } from './dtos/initialize-order-payment.dto';
 import { ActiveUser, Auth } from 'src/api/auth/decorators';
 import { AuthType } from 'src/api/auth/enums/auth-type.enum';
 import { VerifyOrderPaymentDto } from './dtos/verify-order-payment.dto';
 
+@ApiTags('Payments/Chapa')
 @Controller('payments/chapa')
 export class ChapaController {
   constructor(
