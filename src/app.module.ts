@@ -19,6 +19,7 @@ import { PinnoLoggerModule } from './common/pinno-logger/pinno-logger.module';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { SwaggerConfigModule } from './common/swagger/swagger.module';
 import { ReviewsModule } from './api/reviews/reviews.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -51,6 +52,6 @@ import { ReviewsModule } from './api/reviews/reviews.module';
 
     ReviewsModule,
   ],
-  controllers: [],
+  controllers: [AppController],
 })
 export class AppModule {}

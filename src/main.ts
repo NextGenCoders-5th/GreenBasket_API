@@ -1,4 +1,8 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
@@ -14,7 +18,12 @@ async function bootstrap() {
 
   const API_PREFIX = process.env.API_PREFIX || 'api/v1';
   // global prefix
-  app.setGlobalPrefix(API_PREFIX);
+  app.setGlobalPrefix(API_PREFIX, {
+    exclude: [
+      { path: '/api-docs', method: RequestMethod.GET },
+      { path: '/', method: RequestMethod.GET },
+    ],
+  });
 
   // global pipes
   app.useGlobalPipes(
