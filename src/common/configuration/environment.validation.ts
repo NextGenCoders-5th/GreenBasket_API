@@ -5,8 +5,10 @@ export default Joi.object({
   APP_NAME: Joi.string().required(),
   API_VERSION: Joi.string().required(),
   API_PREFIX: Joi.string().required(),
-  BACKEND_URL: Joi.string().required(),
-  FRONTEND_URL: Joi.string().required(),
+  BACKEND_URL_DEV: Joi.string().required(),
+  BACKEND_URL_PROD: Joi.string().required(),
+  FRONTEND_URL_DEV: Joi.string().required(),
+  FRONTEND_URL_PROD: Joi.string().required(),
   RESET_PASSWORD_FRONTEND_URL: Joi.string().required(),
   DEFAULT_SYS_PASSWORD: Joi.string().required(),
 
