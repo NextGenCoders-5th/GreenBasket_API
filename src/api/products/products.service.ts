@@ -11,6 +11,7 @@ import {
   UpdateProductByIdProvider,
 } from './providers';
 import { IDeleteProductById } from './interfaces/delete-product-by-id.interface';
+import { GetProductsDto } from './dto/get-products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -27,8 +28,8 @@ export class ProductsService {
     return this.createProductProvider.createProduct(createProductDto);
   }
 
-  findAllProducts() {
-    return this.findAllProductsProvider.findAllProducts();
+  findAllProducts(query: GetProductsDto) {
+    return this.findAllProductsProvider.findAllProducts(query);
   }
 
   findProductById(id: string) {

@@ -1,22 +1,18 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
-  UploadedFile,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { ActiveUser, Auth, Role } from '../auth/decorators';
-import { UserRole } from '@prisma/client';
-import { AuthType } from '../auth/enums/auth-type.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -24,9 +20,15 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { UserRole } from '@prisma/client';
 import { FileUploadService } from 'src/common/file-upload/file-upload.service';
 import { FileUploadDirNames } from 'src/lib/constants/file-upload-dir-names';
+import { ActiveUser, Auth, Role } from '../auth/decorators';
+import { AuthType } from '../auth/enums/auth-type.enum';
+import { CreateProductDto } from './dto/create-product.dto';
+import { GetProductsDto } from './dto/get-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {
@@ -71,8 +73,8 @@ export class ProductsController {
   })
   @Auth(AuthType.NONE)
   @Get()
-  findAllProducts() {
-    return this.productsService.findAllProducts();
+  findAllProducts(@Query() query: GetProductsDto) {
+    return this.productsService.findAllProducts(query);
   }
 
   @ApiOperation({
