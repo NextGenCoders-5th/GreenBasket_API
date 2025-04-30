@@ -35,6 +35,16 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly fileUploadService: FileUploadService,
   ) {}
+  // find current user
+  @ApiOperation({
+    summary: 'Get current user',
+    description: 'users can use this route to get their profile.',
+  })
+  @ApiBearerAuth()
+  @Get('account/current-user')
+  findCurrentUser(@ActiveUser('sub') id: string) {
+    return this.usersService.findUserById(id);
+  }
 
   @ApiOperation({
     summary: 'Update user profile-picture',
