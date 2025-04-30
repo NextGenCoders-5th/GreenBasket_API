@@ -1,34 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { ActiveUser, Role } from '../auth/decorators';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
 
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @Post()
-  create(@Body() createCartDto: CreateCartDto) {
-    return this.cartService.create(createCartDto);
+  @ApiOperation({
+    summary: 'Get my cart',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Get('my-cart')
+  findMyCart(@ActiveUser('sub') userId: string) {
+    return this.cartService.findMyCart(userId);
   }
 
-  @Get()
-  findAll() {
-    return this.cartService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cartService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-    return this.cartService.update(+id, updateCartDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartService.remove(+id);
+  @ApiOperation({
+    summary: 'Get all my carts',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Get('my-carts')
+  findMyCarts(@ActiveUser('sub') userId: string) {
+    return this.cartService.findMyCarts(userId);
   }
 }

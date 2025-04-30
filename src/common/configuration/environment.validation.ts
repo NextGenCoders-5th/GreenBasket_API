@@ -5,8 +5,10 @@ export default Joi.object({
   APP_NAME: Joi.string().required(),
   API_VERSION: Joi.string().required(),
   API_PREFIX: Joi.string().required(),
-  BACKEND_URL: Joi.string().required(),
-  FRONTEND_URL: Joi.string().required(),
+  BACKEND_URL_DEV: Joi.string().required(),
+  BACKEND_URL_PROD: Joi.string().required(),
+  FRONTEND_URL_DEV: Joi.string().required(),
+  FRONTEND_URL_PROD: Joi.string().required(),
   RESET_PASSWORD_FRONTEND_URL: Joi.string().required(),
   DEFAULT_SYS_PASSWORD: Joi.string().required(),
 
@@ -23,4 +25,9 @@ export default Joi.object({
   // cookie config
   COOKIE_ACCESS_TOKEN_EXPIRES_IN: Joi.number().required(),
   COOKIE_REFRESH_TOKEN_EXPIRES_IN: Joi.number().required(),
+
+  // chapa payment get way
+  CHAPA_WEBHOOK_URL: Joi.string().required(),
+  CHAPA_WEBHOOK_SECRET: Joi.string().required(),
+  CHAPA_SECRET_KEY: Joi.string().required(),
 });

@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
+import { Category } from '@prisma/client';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import {
+  CreateCategoryProvider,
+  DeleteCategoryByIdProvider,
+  FindAllCategoriesProvider,
+  FindCategoryByIdProvider,
+  FindOneCategoryProvider,
+  UpdateCategoryByIdProvider,
+} from './providers';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    private readonly createCategoryProvider: CreateCategoryProvider,
+    private readonly deleteCategoryByIdProvider: DeleteCategoryByIdProvider,
+    private readonly findAllCategoriesProvider: FindAllCategoriesProvider,
+    private readonly findCategoryByIdProvider: FindCategoryByIdProvider,
+    private readonly findOneCategoryProvider: FindOneCategoryProvider,
+    private readonly updateCategoryByIdProvider: UpdateCategoryByIdProvider,
+  ) {}
+
+  createCategory(createCategoryDto: CreateCategoryDto) {
+    return this.createCategoryProvider.createCategory(createCategoryDto);
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  findAllCategories() {
+    return this.findAllCategoriesProvider.findAllCategories();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  findCategoryById(id: string) {
+    return this.findCategoryByIdProvider.findCategoryById(id);
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  updateCategoryById(id: string, updateCategoryDto: UpdateCategoryDto) {
+    return this.updateCategoryByIdProvider.updateCategoryById(
+      id,
+      updateCategoryDto,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  deleteCategoryById(id: string) {
+    return this.deleteCategoryByIdProvider.deleteCategoryById(id);
+  }
+
+  findOneCategory(options: Partial<Category>) {
+    return this.findOneCategoryProvider.findOneCategory(options);
   }
 }

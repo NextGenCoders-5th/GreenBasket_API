@@ -31,5 +31,6 @@ import { DeleteAddressByIdProvider } from './providers/delete-address-by-id.prov
     DeleteAddressByIdProvider,
   ],
   imports: [PrismaModule, UsersModule, VendorsModule],
+  exports: [AddressesService],
 })
 export class AddressesModule {}

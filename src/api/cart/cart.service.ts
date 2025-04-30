@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { Cart } from '@prisma/client';
+import { CreateCartProvider } from './providers/create-cart.provider';
+import { FindMyCartProvider } from './providers/find-my-cart.provider';
+import { FindOneCartProvider } from './providers/find-one-cart.provider';
+import { FindMyCartsProvider } from './providers/find-my-carts.provider';
 
 @Injectable()
 export class CartService {
-  create(createCartDto: CreateCartDto) {
-    return 'This action adds a new cart';
+  constructor(
+    private readonly findOneCartProvider: FindOneCartProvider,
+    private readonly createCartProvider: CreateCartProvider,
+    private readonly findMyCartProvider: FindMyCartProvider,
+    private readonly findMyCartsProvider: FindMyCartsProvider,
+  ) {}
+  createCart({ userId }: { userId: string }) {
+    return this.createCartProvider.createCart({ userId });
   }
 
-  findAll() {
-    return `This action returns all cart`;
+  findMyCart(userId: string) {
+    return this.findMyCartProvider.findMyCart(userId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
+  findMyCarts(userId: string) {
+    return this.findMyCartsProvider.findMyCarts(userId);
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+  findOneCart(options: Partial<Cart>) {
+    return this.findOneCartProvider.findOneCart(options);
   }
 }

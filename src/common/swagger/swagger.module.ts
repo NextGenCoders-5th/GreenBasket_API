@@ -12,8 +12,8 @@ export class SwaggerConfigModule {
       .setVersion('1.0.0')
       .addServer(
         ENV === 'development'
-          ? 'http://localhost:5000'
-          : 'https://multivendor-marketplace-backend-api.onrender.com',
+          ? process.env.BACKEND_URL_DEV
+          : process.env.BACKEND_URL_PROD,
       )
       .addBearerAuth() // Add Bearer token support
       .build();

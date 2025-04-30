@@ -40,7 +40,8 @@ model User {
   // one user may have many orders
   orders Order[]
   // one user may have many orders
-  carts  Cart[]
+  cart   Cart[]
+  Review Review[]
 }
 
 model Vendor {
@@ -111,11 +112,12 @@ model Product {
   name           String
   description    String
   price          Decimal
-  descount_price Decimal?      @default(0)
+  discount_price Decimal?      @default(0)
   unit           String
-  stock          Decimal
+  stock          Int
   image_url      String
   status         ProductStatus @default(ACTIVE)
+  is_featured    Boolean       @default(false)
 
   // one vendor many products
   Vendor     Vendor      @relation(fields: [vendorId], references: [id])
@@ -123,6 +125,7 @@ model Product {
   // many to many relation product - category
   categories Category[]
   OrderItems OrderItem[]
+  CartItem   CartItem[]
 }
 
 model Cart {
@@ -130,12 +133,15 @@ model Cart {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
-  total_price Decimal
+  total_price Decimal    @default(0)
   status      CartStatus @default(ACTIVE)
 
   CartItems CartItem[]
-  User      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
+
+  // multi-vendor marketplace, the checkout flow needs to split the cart by vendor, and create separate orders per vendor
+  Order Order[]
 }
 
 model CartItem {
@@ -144,11 +150,17 @@ model CartItem {
   createdAt DateTime @default(now())
 
   price     Decimal
-  quantity  Decimal
+  quantity  Int
   sub_total Decimal
+
+  Product   Product @relation(fields: [productId], references: [id])
+  productId String
 
   Cart   Cart   @relation(fields: [cartId], references: [id])
   cartId String
+
+  // NOTE: In a cart system, a user should not be able to add the same product twice to the cart as separate entries — instead, the quantity should just increase.
+  @@unique([cartId, productId], name: "unique_cart_product")
 }
 
 model Order {
@@ -158,15 +170,21 @@ model Order {
 
   total_price Decimal
   status      OrderStatus @default(PENDING)
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+  receivedAt  DateTime?
 
-  // one order may have many order items
+  cart   Cart   @relation(fields: [cartId], references: [id])
+  cartId String
+
+  // ensures only one order can ever exist for a cart
   OrderItems OrderItem[]
   Payment    Payment?
   // one user may have many orders
   User       User        @relation(fields: [userId], references: [id])
   userId     String
   // one vendor may have many orders
-  Vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  vendor     Vendor      @relation(fields: [vendorId], references: [id])
   vendorId   String
   // Shipping/delivery address. it should be one of the customers address else the default customer address
   Adress     Address     @relation(fields: [addressId], references: [id])
@@ -184,6 +202,7 @@ model OrderItem {
   quantity  Decimal
   // price * quantity.
   sub_total Decimal
+  reviewed  Boolean @default(false)
 
   // one order may have many order items
   Order     Order   @relation(fields: [orderId], references: [id])
@@ -191,6 +210,8 @@ model OrderItem {
   // one order item will have one product
   Product   Product @relation(fields: [productId], references: [id])
   productId String
+
+  Review Review?
 }
 
 model Payment {
@@ -198,11 +219,31 @@ model Payment {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
-  amount Decimal
-  status PaymentStatus @default(PENDING)
+  amount        Decimal
+  status        PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod
+  reference     String        @unique
+  paidAt        DateTime?
 
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rating  Int
+  comment String?
+
+  userId      String
+  orderItemId String @unique
+
+  User      User      @relation(fields: [userId], references: [id])
+  OrderItem OrderItem @relation(fields: [orderItemId], references: [id])
+
+  @@unique([userId, orderItemId], name: "unique_user_order_item")
 }
 
 enum UserRole {
@@ -272,4 +313,11 @@ enum OrderStatus {
 enum PaymentStatus {
   PENDING
   PAID
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+  STRIPE
+  CHAPA
 }

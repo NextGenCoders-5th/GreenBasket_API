@@ -1,26 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { UserRole } from '@prisma/client';
+import { CheckOutDto } from './dtos/checkout.dto';
+import { UpdateOrderStatusDto } from './dtos/update-order-status.dto';
+import {
+  CheckOutProvider,
+  FindAllOrdersProvider,
+  FindAllVendorOrdersProvider,
+  FindMyOrderProvider,
+  FindMyOrdersProvider,
+  FindOrderByIdProvider,
+  UpdateOrderStatusByIdProvider,
+} from './providers';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(
+    private readonly checkOutProvider: CheckOutProvider,
+    private readonly findAllOrdersProvider: FindAllOrdersProvider,
+    private readonly findAllVendorOrdersProvider: FindAllVendorOrdersProvider,
+    private readonly findMyOrderProvider: FindMyOrderProvider,
+    private readonly findMyOrdersProvider: FindMyOrdersProvider,
+    private readonly findOrderByIdProvider: FindOrderByIdProvider,
+    private readonly updateOrderStatusByIdProvider: UpdateOrderStatusByIdProvider,
+  ) {}
+
+  findAllOrders() {
+    return this.findAllOrdersProvider.findAllOrders();
   }
 
-  findAll() {
-    return `This action returns all orders`;
+  findAllVendorOrders(vendorId: string, userId: string) {
+    return this.findAllVendorOrdersProvider.findAllVendorOrders(
+      vendorId,
+      userId,
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  findMyOrder(orderId: string, userId: string) {
+    return this.findMyOrderProvider.findMyOrder(orderId, userId);
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  findMyOrders(userId: string) {
+    return this.findMyOrdersProvider.findMyOrders(userId);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  findOrderById(orderId: string) {
+    return this.findOrderByIdProvider.findOrderById(orderId);
+  }
+
+  checkOut(checOutDto: CheckOutDto) {
+    return this.checkOutProvider.checkOut(checOutDto);
+  }
+
+  updateOrderStatusById(
+    orderId: string,
+    updateOrderStatusDto: UpdateOrderStatusDto,
+    role: UserRole,
+  ) {
+    return this.updateOrderStatusByIdProvider.updateOrderStatusById(
+      orderId,
+      updateOrderStatusDto,
+      role,
+    );
   }
 }

@@ -1,4 +1,8 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
@@ -6,6 +10,7 @@ import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { DecimalInterceptor } from './common/interceptors/serialize-prisma-decimals/decimal.interceptor';
 import { SwaggerConfigModule } from './common/swagger/swagger.module';
 
 async function bootstrap() {
@@ -13,7 +18,12 @@ async function bootstrap() {
 
   const API_PREFIX = process.env.API_PREFIX || 'api/v1';
   // global prefix
-  app.setGlobalPrefix(API_PREFIX);
+  app.setGlobalPrefix(API_PREFIX, {
+    exclude: [
+      { path: '/api-docs', method: RequestMethod.GET },
+      { path: '/', method: RequestMethod.GET },
+    ],
+  });
 
   // global pipes
   app.useGlobalPipes(
@@ -31,15 +41,14 @@ async function bootstrap() {
   // global interceptors
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)), // Apply ClassSerializerInterceptor globally
+    new DecimalInterceptor(),
   );
 
   // enable cors
-  app.enableCors(
-    {
-      origin: 'http://localhost:3000',
-      credentials: true,
-    },
-  );
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
   app.use(cookieParser());
   app.use(helmet());
 
@@ -50,6 +59,6 @@ async function bootstrap() {
   // Setup Swagger
   SwaggerConfigModule.setup(app);
 
-  await app.listen(5000);
+  await app.listen(process.env.PORT || 5000);
 }
 bootstrap();
