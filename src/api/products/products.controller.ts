@@ -58,13 +58,14 @@ export class ProductsController {
   @Post()
   createProduct(
     @Body() createProductDto: CreateProductDto,
-    @ActiveUser('sub') vendorId: string,
+    @ActiveUser('sub') userId: string,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    createProductDto.vendorId = vendorId;
+    createProductDto.userId = userId;
     if (image) {
       createProductDto.image_url = this.fileUploadService.getFilePath(image);
     }
+    console.log({ createProductDto });
     return this.productsService.createProduct(createProductDto);
   }
 
