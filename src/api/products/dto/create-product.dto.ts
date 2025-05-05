@@ -43,7 +43,7 @@ export class CreateProductDto {
     description: 'Measurement unit (e.g., kg, lb, bunch).',
   })
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   unit: string;
 
   @ApiProperty({
