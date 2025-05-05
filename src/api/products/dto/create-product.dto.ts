@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
@@ -69,12 +70,23 @@ export class CreateProductDto {
       type: 'string',
     },
   })
+  @Transform(({ value }) => {
+    if (!value) return []; // Ensure it's always an array
+    if (Array.isArray(value)) return value; // Already an array, return as is
+    if (typeof value === 'string') {
+      return value.includes(',')
+        ? value.split(',').map((v) => v.trim())
+        : [value];
+    }
+    return [];
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   categories?: string[];
 
   // get it from the current login vendor
+  userId: string;
   vendorId: string;
   image_url: string;
 }
