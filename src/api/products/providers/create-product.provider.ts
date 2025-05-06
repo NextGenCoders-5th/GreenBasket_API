@@ -7,10 +7,14 @@ import { Category } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 import { CreateProductDto } from '../dto/create-product.dto';
+import { VendorsService } from 'src/api/vendors/vendors.service';
 
 @Injectable()
 export class CreateProductProvider {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly vendorService: VendorsService,
+  ) {}
 
   public async createProduct(createProductDto: CreateProductDto) {
     const {
@@ -21,8 +25,8 @@ export class CreateProductProvider {
       discount_price,
       unit,
       stock,
-      vendorId,
       categories,
+      userId,
     } = createProductDto;
 
     // Validate category IDs
@@ -52,6 +56,11 @@ export class CreateProductProvider {
       }
     }
 
+    const vendor = await this.vendorService.findOneVendor({ userId });
+    if (!vendor) {
+      throw new BadRequestException('vendor not found.');
+    }
+
     try {
       const product = await this.prisma.product.create({
         data: {
@@ -61,7 +70,7 @@ export class CreateProductProvider {
           discount_price,
           unit,
           stock,
-          vendorId,
+          vendorId: vendor.id,
           image_url,
           categories: categories
             ? {

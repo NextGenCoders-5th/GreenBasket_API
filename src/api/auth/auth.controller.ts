@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Res,
 } from '@nestjs/common';
@@ -83,5 +84,19 @@ export class AuthController {
   @Post('refresh-token')
   refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshToken(refreshTokenDto);
+  }
+
+  @ApiOperation({
+    summary: 'Logout',
+    description: 'Logout a user. use this endpoint to logout a user.',
+  })
+  @Patch('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(ACCESS_TOKEN);
+    res.clearCookie(REFRESH_TOKEN);
+    return {
+      stats: 'success',
+      message: 'Logout successful',
+    };
   }
 }
