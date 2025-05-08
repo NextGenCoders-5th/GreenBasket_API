@@ -17,9 +17,7 @@ export class CreateCategoryDto {
   image: string;
 
   // for internal use
-  @IsString()
   slug: string;
 
-  @IsString()
   image_url: string;
 }
