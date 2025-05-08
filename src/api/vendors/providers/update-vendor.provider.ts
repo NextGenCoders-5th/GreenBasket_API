@@ -45,11 +45,14 @@ export class UpdateVendorProvider {
         );
       }
     }
-
+    // fixeme
     // check if vendor already exists with the same email or phone number
     try {
       vendor = await this.prisma.vendor.findFirst({
         where: {
+          id: {
+            not: id,
+          },
           OR: [{ business_email }, { phone_number }],
         },
       });

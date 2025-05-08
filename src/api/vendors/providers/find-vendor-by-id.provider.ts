@@ -29,7 +29,7 @@ export class FindVendorByIdProvider {
     return CreateApiResponse({
       status: 'success',
       message: 'find vendor by id successfull.',
-      data: null,
+      data: vendor,
     });
   }
 }
