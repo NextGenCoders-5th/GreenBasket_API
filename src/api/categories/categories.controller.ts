@@ -22,10 +22,11 @@ import {
 import { UserRole } from '@prisma/client';
 import { FileUploadService } from 'src/common/file-upload/file-upload.service';
 import { FileUploadDirNames } from 'src/lib/constants/file-upload-dir-names';
-import { Role } from '../auth/decorators';
+import { Auth, Role } from '../auth/decorators';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { AuthType } from '../auth/enums/auth-type.enum';
 
 @Controller('categories')
 export class CategoriesController {
@@ -82,7 +83,7 @@ export class CategoriesController {
     required: true,
   })
   @ApiBearerAuth()
-  @Role(UserRole.ADMIN)
+  @Auth(AuthType.NONE)
   @Get(':id')
   findCategoryById(@Param('id') id: string) {
     return this.categoriesService.findCategoryById(id);
