@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { CheckPasswordConfirm } from 'src/common/decorators/check-password-confirm.decorator';
 
-export default class UpdateUserPasswordDto {
+export class UpdateUserPasswordDto {
   @ApiProperty({
     description: 'users old or current password',
   })

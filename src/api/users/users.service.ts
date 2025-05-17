@@ -8,6 +8,8 @@ import { CreateUserProvider } from './providers/crud/create-user.provider';
 import { User } from '@prisma/client';
 import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
 import { UpdateProfilePictureProvider } from './providers/account/update-profile-picture.provider';
+import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
+import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +22,7 @@ export class UsersService {
     private readonly deleteUserByIdProvider: DeleteUserByIdProvider,
 
     private readonly updateProfilePictureProvider: UpdateProfilePictureProvider,
+    private readonly completeOnboardingProvider: CompleteOnboardingProvider,
   ) {}
 
   createUser(createUserDto: CreateUserDto) {
@@ -54,6 +57,12 @@ export class UsersService {
     return this.updateProfilePictureProvider.updateProfilePicture(
       id,
       updateProfilePictureDto,
+    );
+  }
+
+  completeOnboarding(completeOnboardingDto: CompleteOnboardingDto) {
+    return this.completeOnboardingProvider.completeOnboarding(
+      completeOnboardingDto,
     );
   }
 }

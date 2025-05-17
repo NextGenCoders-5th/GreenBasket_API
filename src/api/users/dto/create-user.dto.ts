@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export default class CreateUserDto {
+export class CreateUserDto {
   @ApiProperty({
     description: 'user first name',
   })
