@@ -10,6 +10,7 @@ import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
 import { UpdateProfilePictureProvider } from './providers/account/update-profile-picture.provider';
 import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
 import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
+import { RequestAccountVerificationProvider } from './providers/account/request-account-verification.provider';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,7 @@ export class UsersService {
     private readonly findOneUserProvider: FindOneUserProvider,
     private readonly findUserByIdProvider: FindUserByIdProvider,
     private readonly deleteUserByIdProvider: DeleteUserByIdProvider,
-
+    private readonly requestAccountVerificationProvider: RequestAccountVerificationProvider,
     private readonly updateProfilePictureProvider: UpdateProfilePictureProvider,
     private readonly completeOnboardingProvider: CompleteOnboardingProvider,
   ) {}
@@ -63,6 +64,12 @@ export class UsersService {
   completeOnboarding(completeOnboardingDto: CompleteOnboardingDto) {
     return this.completeOnboardingProvider.completeOnboarding(
       completeOnboardingDto,
+    );
+  }
+
+  requestAccountVerification(userId: string) {
+    return this.requestAccountVerificationProvider.requestAccountVerification(
+      userId,
     );
   }
 }

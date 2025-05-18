@@ -127,6 +127,17 @@ export class UsersController {
   }
 
   @ApiOperation({
+    summary: 'request account verification for users',
+    description: 'request account verification for users',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Patch('account/request-account-verification')
+  requestAccountVerification(@ActiveUser('sub') userId: string) {
+    return this.usersService.requestAccountVerification(userId);
+  }
+
+  @ApiOperation({
     summary: 'Create a User',
     description:
       'Create a User, user this route to create a new user. Admins only',
