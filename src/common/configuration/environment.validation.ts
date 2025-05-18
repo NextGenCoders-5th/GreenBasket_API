@@ -41,4 +41,9 @@ export default Joi.object({
   // real email sending
   SENDGRID_USERNAME: Joi.string().required(),
   SENDGRID_PASSWORD: Joi.string().required(),
+
+  // Twilio
+  TWILIO_ACCOUNT_SID: Joi.string().required(),
+  TWILIO_PHONE_NUMBER: Joi.string().required(),
+  TWILIO_AUTH_TOKEN: Joi.string().required(),
 });
