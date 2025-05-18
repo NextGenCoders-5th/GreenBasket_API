@@ -21,6 +21,7 @@ import { SwaggerConfigModule } from './common/swagger/swagger.module';
 import { ReviewsModule } from './api/reviews/reviews.module';
 import { AppController } from './app.controller';
 import { EmailModule } from './common/email/email.module';
+import { MessageModule } from './common/message/message.module';
 
 @Module({
   imports: [
@@ -54,6 +55,8 @@ import { EmailModule } from './common/email/email.module';
     ReviewsModule,
 
     EmailModule,
+
+    MessageModule,
   ],
   controllers: [AppController],
 })
