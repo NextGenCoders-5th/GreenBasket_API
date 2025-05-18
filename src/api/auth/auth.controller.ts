@@ -10,13 +10,14 @@ import {
 import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignupDto } from './dtos/sign-up.dto';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { AuthType } from './enums/auth-type.enum';
 import { Response } from 'express';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants/auth.constant';
 import { ConfigService } from '@nestjs/config';
 import { Auth } from './decorators';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -87,9 +88,26 @@ export class AuthController {
   }
 
   @ApiOperation({
+    summary: 'forgot password.',
+    description:
+      'forgot your password? use this endpoint to get the reset token.',
+  })
+  @ApiBody({
+    type: ForgotPasswordDto,
+    required: true,
+  })
+  @Auth(AuthType.NONE)
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password')
+  forgotMyPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotMyPassword(forgotPasswordDto);
+  }
+
+  @ApiOperation({
     summary: 'Logout',
     description: 'Logout a user. use this endpoint to logout a user.',
   })
+  @ApiBearerAuth()
   @Patch('logout')
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie(ACCESS_TOKEN);

@@ -22,6 +22,7 @@ export class EmailService {
     // });
     const transporter = nodemailer.createTransport({
       service: 'SendGrid',
+      secure: false,
       auth: {
         user: this.configService.get('email.sendgrid_username'),
         pass: this.configService.get('email.sendgrid_password'),
