@@ -11,8 +11,14 @@ export class CompleteOnboardingProvider {
   public async completeOnboarding(
     completeOnboardingDto: CompleteOnboardingDto,
   ) {
-    const { first_name, last_name, idPhoto_back, idPhoto_front, userId } =
-      completeOnboardingDto;
+    const {
+      first_name,
+      last_name,
+      idPhoto_back,
+      idPhoto_front,
+      userId,
+      profile_picture,
+    } = completeOnboardingDto;
 
     let user: User;
     try {
@@ -23,6 +29,7 @@ export class CompleteOnboardingProvider {
           last_name,
           idPhoto_front,
           idPhoto_back,
+          profile_picture,
           is_onboarding: false,
         },
       });

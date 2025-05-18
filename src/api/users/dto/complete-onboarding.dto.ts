@@ -17,6 +17,14 @@ export class CompleteOnboardingDto {
   last_name: string;
 
   @ApiProperty({
+    description: 'Profile picture of the user (file upload)',
+    type: 'string',
+    format: 'binary',
+    required: true,
+  })
+  profile_picture: string;
+
+  @ApiProperty({
     description: 'users identification card photo front page',
     required: true,
     type: 'string',

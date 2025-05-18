@@ -100,6 +100,7 @@ export class UsersController {
       [
         { name: 'idPhoto_front', maxCount: 1 },
         { name: 'idPhoto_back', maxCount: 1 },
+        { name: 'profile_picture', maxCount: 1 },
       ],
       FileUploadService.saveImageToStorage({
         dirName: FileUploadDirNames.user,
@@ -114,14 +115,27 @@ export class UsersController {
     files: {
       idPhoto_front: Express.Multer.File;
       idPhoto_back: Express.Multer.File;
+      profile_picture: Express.Multer.File;
     },
   ) {
+    if (
+      !files.idPhoto_back[0] ||
+      !files.idPhoto_front ||
+      !files.profile_picture
+    ) {
+      throw new BadRequestException(
+        'please provide all required fields. identification card photo and profile picture are required.',
+      );
+    }
     completeOnboardingDto.userId = userId;
     completeOnboardingDto.idPhoto_front = this.fileUploadService.getFilePath(
       files.idPhoto_front[0],
     );
     completeOnboardingDto.idPhoto_back = this.fileUploadService.getFilePath(
       files.idPhoto_back[0],
+    );
+    completeOnboardingDto.profile_picture = this.fileUploadService.getFilePath(
+      files.profile_picture[0],
     );
     return this.usersService.completeOnboarding(completeOnboardingDto);
   }
