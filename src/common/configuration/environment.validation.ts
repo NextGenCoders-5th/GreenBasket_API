@@ -30,4 +30,15 @@ export default Joi.object({
   CHAPA_WEBHOOK_URL: Joi.string().required(),
   CHAPA_WEBHOOK_SECRET: Joi.string().required(),
   CHAPA_SECRET_KEY: Joi.string().required(),
+
+  // email service
+  EMAIL_HOST: Joi.string().required(),
+  EMAIL_PORT: Joi.number().port().required(),
+  EMAIL_USERNAME: Joi.string().required(),
+  EMAIL_PASSWORD: Joi.string().required(),
+  EMAIL_FROM: Joi.string().required(),
+
+  // real email sending
+  SENDGRID_USERNAME: Joi.string().required(),
+  SENDGRID_PASSWORD: Joi.string().required(),
 });

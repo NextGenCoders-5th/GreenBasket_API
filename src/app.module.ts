@@ -20,6 +20,7 @@ import { PrismaModule } from './common/prisma/prisma.module';
 import { SwaggerConfigModule } from './common/swagger/swagger.module';
 import { ReviewsModule } from './api/reviews/reviews.module';
 import { AppController } from './app.controller';
+import { EmailModule } from './common/email/email.module';
 
 @Module({
   imports: [
@@ -51,6 +52,8 @@ import { AppController } from './app.controller';
     }),
 
     ReviewsModule,
+
+    EmailModule,
   ],
   controllers: [AppController],
 })
