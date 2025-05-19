@@ -25,7 +25,12 @@ import { UserRole } from '@prisma/client';
 import { ActiveUser, Auth, Role } from '../auth/decorators';
 import { AuthType } from '../auth/enums/auth-type.enum';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
+import {
+  CreateUserDto,
+  UpdateProfilePictureDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from './dto';
 import {
   FileFieldsInterceptor,
   FileInterceptor,
@@ -81,6 +86,23 @@ export class UsersController {
       profilePicture: this.fileUploadService.getFilePath(profilePicture),
     };
     return this.usersService.updateProfilePicture(id, updateProfilePictureDto);
+  }
+
+  @ApiOperation({
+    summary: 'Update user password',
+    description: 'Update user password',
+  })
+  @ApiBody({
+    type: UpdateUserPasswordDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Patch('account/password')
+  updateUserPassword(
+    @ActiveUser('sub') id: string,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    return this.usersService.updateUserPassword(id, updateUserPasswordDto);
   }
 
   @ApiOperation({

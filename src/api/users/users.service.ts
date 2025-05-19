@@ -6,11 +6,17 @@ import { FindAllUsersProvider } from './providers/crud/find-all-users.provider';
 import { UpdateUserByIdProvider } from './providers/crud/update-user-by-id.provider';
 import { CreateUserProvider } from './providers/crud/create-user.provider';
 import { User } from '@prisma/client';
-import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
+import {
+  CreateUserDto,
+  UpdateProfilePictureDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from './dto';
 import { UpdateProfilePictureProvider } from './providers/account/update-profile-picture.provider';
 import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
 import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { RequestAccountVerificationProvider } from './providers/account/request-account-verification.provider';
+import { UpdateUserPasswordProvider } from './providers/account/update-user-password.provider';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +30,7 @@ export class UsersService {
     private readonly requestAccountVerificationProvider: RequestAccountVerificationProvider,
     private readonly updateProfilePictureProvider: UpdateProfilePictureProvider,
     private readonly completeOnboardingProvider: CompleteOnboardingProvider,
+    private readonly updateUserPasswordProvider: UpdateUserPasswordProvider,
   ) {}
 
   createUser(createUserDto: CreateUserDto) {
@@ -58,6 +65,13 @@ export class UsersService {
     return this.updateProfilePictureProvider.updateProfilePicture(
       id,
       updateProfilePictureDto,
+    );
+  }
+
+  updateUserPassword(id: string, updateUserPasswordDto: UpdateUserPasswordDto) {
+    return this.updateUserPasswordProvider.updateUserPassword(
+      id,
+      updateUserPasswordDto,
     );
   }
 
