@@ -180,7 +180,7 @@ model Order {
   receivedAt  DateTime?
 
   cart   Cart   @relation(fields: [cartId], references: [id])
-  cartId String
+  cartId String @unique
 
   // ensures only one order can ever exist for a cart
   OrderItems OrderItem[]
@@ -194,6 +194,10 @@ model Order {
   // Shipping/delivery address. it should be one of the customers address else the default customer address
   Adress     Address     @relation(fields: [addressId], references: [id])
   addressId  String
+
+  @@index([userId]) // Added index for better query performance
+  @@index([vendorId]) // Added index for better query performance
+  @@index([addressId]) // Added index for better query performance
 }
 
 model OrderItem {
