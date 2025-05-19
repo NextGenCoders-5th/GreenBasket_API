@@ -71,4 +71,14 @@ export class ChapaController {
 
     return this.chapaService.verifyOrderPayment(verifyOrderPaymentDto);
   }
+
+  @ApiOperation({
+    summary: 'Find All Supported Banks.',
+    description: 'Find All Supported Banks and bank codes.',
+  })
+  @ApiBearerAuth()
+  @Get('chapa/supported-banks')
+  findSupportedBankInfos() {
+    return this.chapaService.findSupportedBankInfos();
+  }
 }
