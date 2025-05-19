@@ -52,7 +52,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(helmet());
 
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
 
   app.useLogger(app.get(Logger));
 

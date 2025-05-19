@@ -83,11 +83,7 @@ export class FileUploadService {
       fullFilePath.startsWith('https://')
     ) {
       const relativePath = fullFilePath.split('/uploads/')[1];
-      filePath = path.resolve(
-        __dirname,
-        '../../../public/uploads',
-        relativePath,
-      );
+      filePath = path.join(process.cwd(), '/public/uploads', relativePath);
 
       console.log('file path to be removed from the folder...', filePath);
 
