@@ -7,6 +7,8 @@ import { RefreshTokenProvider } from './providers/jwt-token/refresh-token.provid
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { ForgotPasswordProvider } from './providers/password-reset/forgot-password.provider';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { ResetPasswordProvider } from './providers/password-reset/reset-password.provider';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
     private readonly signupProvider: SignUpProvider,
     private readonly refreshTokenProvider: RefreshTokenProvider,
     private readonly forgotPasswordProvider: ForgotPasswordProvider,
+    private readonly resetPasswordProvider: ResetPasswordProvider,
   ) {}
   signin(signinDto: SignInDto) {
     return this.signinProvider.signin(signinDto);
@@ -30,5 +33,12 @@ export class AuthService {
 
   forgotMyPassword(forgotPasswordDto: ForgotPasswordDto) {
     return this.forgotPasswordProvider.forgotMyPassword(forgotPasswordDto);
+  }
+
+  resetMyPassword(resetToken: string, resetPasswordDto: ResetPasswordDto) {
+    return this.resetPasswordProvider.resetMyPassword(
+      resetToken,
+      resetPasswordDto,
+    );
   }
 }
