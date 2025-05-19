@@ -8,6 +8,7 @@ import {
   jwtConfig,
   emailConfig,
   twilioConfig,
+  paymentConfig,
 } from './config';
 
 @Module({
@@ -22,6 +23,7 @@ import {
         cookieConfig,
         emailConfig,
         twilioConfig,
+        paymentConfig,
       ],
       validationSchema: environmentValidation,
     }),

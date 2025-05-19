@@ -6,17 +6,18 @@ import {
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
-import helmet from 'helmet';
-import { Logger } from 'nestjs-pino';
-import { join } from 'path';
 import * as express from 'express';
+import helmet from 'helmet';
+import { join } from 'path';
 
 import { AppModule } from './app.module';
 import { DecimalInterceptor } from './common/interceptors/serialize-prisma-decimals/decimal.interceptor';
 import { SwaggerConfigModule } from './common/swagger/swagger.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['error', 'warn'],
+  });
 
   const API_PREFIX = process.env.API_PREFIX || 'api/v1';
   // global prefix
@@ -55,18 +56,18 @@ async function bootstrap() {
   app.use(helmet());
 
   //app.useStaticAssets(join(process.cwd(), 'public'));
-  
-  app.use(
-  '/uploads',
-  express.static(join(process.cwd(), 'public', 'uploads'), {
-    setHeaders: (res, path, stat) => {
-      res.set('Access-Control-Allow-Origin', '*'); // Or restrict to specific frontend domain
-      res.set('Cross-Origin-Resource-Policy', 'cross-origin'); // This is the key header
-    },
-  }),
-);
 
-  app.useLogger(app.get(Logger));
+  app.use(
+    '/uploads',
+    express.static(join(process.cwd(), 'public', 'uploads'), {
+      setHeaders: (res) => {
+        res.set('Access-Control-Allow-Origin', '*'); // Or restrict to specific frontend domain
+        res.set('Cross-Origin-Resource-Policy', 'cross-origin'); // This is the key header
+      },
+    }),
+  );
+
+  // app.useLogger(app.get(Logger));
 
   // Setup Swagger
   SwaggerConfigModule.setup(app);
