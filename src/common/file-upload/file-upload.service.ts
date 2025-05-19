@@ -28,9 +28,11 @@ export class FileUploadService {
   }
 
   public static saveImageToStorage({ dirName }: { dirName: string }) {
-    const uploadsDirRoot = path.resolve(
-      __dirname,
-      `../../../public/uploads/${dirName}`,
+    const uploadsDirRoot = path.join(
+      process.cwd(),
+      'public',
+      'uploads',
+      dirName,
     );
 
     // Ensure the uploads directory exists
