@@ -1,3 +1,4 @@
+export { VerifyUserDto } from './verify-user.dto';
 export { CompleteOnboardingDto } from './complete-onboarding.dto';
 export { CreateUserDto } from './create-user.dto';
 export { UpdateProfilePictureDto } from './update-profile-picture.dto';

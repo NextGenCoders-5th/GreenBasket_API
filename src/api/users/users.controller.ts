@@ -28,8 +28,10 @@ import { UsersService } from './users.service';
 import {
   CreateUserDto,
   UpdateProfilePictureDto,
+  UpdateUserDataDto,
   UpdateUserDto,
   UpdateUserPasswordDto,
+  VerifyUserDto,
 } from './dto';
 import {
   FileFieldsInterceptor,
@@ -54,6 +56,23 @@ export class UsersController {
   @Get('account/current-user')
   findCurrentUser(@ActiveUser('sub') id: string) {
     return this.usersService.findUserById(id);
+  }
+
+  @ApiOperation({
+    summary: "update currently logged's data.",
+    description: "update currently logged's data.",
+  })
+  @ApiBody({
+    type: UpdateUserDataDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Patch('account/update-my-data')
+  updateUserData(
+    @ActiveUser('sub') id: string,
+    @Body() updateUserDataDto: UpdateUserDataDto,
+  ) {
+    return this.usersService.updateUserData(id, updateUserDataDto);
   }
 
   @ApiOperation({
@@ -171,6 +190,33 @@ export class UsersController {
   @Patch('account/request-account-verification')
   requestAccountVerification(@ActiveUser('sub') userId: string) {
     return this.usersService.requestAccountVerification(userId);
+  }
+
+  @ApiOperation({
+    summary: 'find all verification requests.',
+    description: 'find all verification requests.',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
+  @Get('account/verification-requests')
+  findAllVerificationRequests() {
+    return this.usersService.findAllVerificationRequests();
+  }
+
+  @ApiOperation({
+    summary: 'verify user account.',
+    description:
+      'admins can use this endpoint to verify/declince user verification requests',
+  })
+  @ApiBody({
+    type: VerifyUserDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.ADMIN)
+  @Post('account/verify-user')
+  verifyUser(@Body() verifyUserDto: VerifyUserDto) {
+    return this.usersService.verifyUser(verifyUserDto);
   }
 
   @ApiOperation({
