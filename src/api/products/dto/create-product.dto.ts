@@ -8,6 +8,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { ProductUnitEnum } from '../enum/product-unit.enum';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -35,13 +36,14 @@ export class CreateProductDto {
   @ApiProperty({
     description: 'Optional discount price',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(0)
   discount_price: number;
 
   @ApiProperty({
-    description: 'Measurement unit (e.g., kg, lb, bunch).',
+    description: 'Measurement unit',
+    enum: ProductUnitEnum,
   })
   @IsNotEmpty()
   @IsString()
@@ -71,13 +73,22 @@ export class CreateProductDto {
     },
   })
   @Transform(({ value }) => {
+    console.log({ value });
     if (!value) return []; // Ensure it's always an array
     if (Array.isArray(value)) return value; // Already an array, return as is
+    if (
+      typeof value === 'string' &&
+      value.startsWith('[') &&
+      value.endsWith(']')
+    ) {
+      value = value.slice(1, -1);
+    }
     if (typeof value === 'string') {
       return value.includes(',')
         ? value.split(',').map((v) => v.trim())
         : [value];
     }
+
     return [];
   })
   @IsOptional()
