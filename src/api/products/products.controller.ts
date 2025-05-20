@@ -119,10 +119,10 @@ export class ProductsController {
   updateProductById(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @ActiveUser('sub') vendorId: string,
+    @ActiveUser('sub') userId: string,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    updateProductDto.vendorId = vendorId;
+    updateProductDto.userId = userId;
     if (image) {
       updateProductDto.image_url = this.fileUploadService.getFilePath(image);
     }

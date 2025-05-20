@@ -98,6 +98,5 @@ export class CreateProductDto {
 
   // get it from the current login vendor
   userId: string;
-  vendorId: string;
   image_url: string;
 }
