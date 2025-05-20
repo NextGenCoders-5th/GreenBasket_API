@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Category } from '@prisma/client';
+import { Category, Vendor } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { FindOneProductProvider } from './find-one-product.provider';
@@ -30,13 +30,27 @@ export class UpdateProductByIdProvider {
       unit,
       stock,
       categories,
-      vendorId,
+      userId,
     } = updateProductDto;
+
+    let vendor: Vendor;
+    try {
+      vendor = await this.prisma.vendor.findFirst({ where: { userId } });
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(
+        'unable to find vendor. please try again later.',
+      );
+    }
+
+    if (!vendor) {
+      throw new NotFoundException('vendor not found.');
+    }
 
     // check if product exists
     let product = await this.findOneProductProvider.findOneProduct({
       id,
-      vendorId,
+      vendorId: vendor.id,
     });
 
     if (!product) {
