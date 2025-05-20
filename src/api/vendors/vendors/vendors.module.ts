@@ -9,7 +9,7 @@ import { FindVendorByIdProvider } from './providers/find-vendor-by-id.provider';
 import { UpdateVendorProvider } from './providers/update-vendor.provider';
 import { VendorsController } from './vendors.controller';
 import { VendorsService } from './vendors.service';
-import { UsersModule } from '../users/users.module';
+import { UsersModule } from '../../users/users.module';
 
 @Module({
   controllers: [VendorsController],

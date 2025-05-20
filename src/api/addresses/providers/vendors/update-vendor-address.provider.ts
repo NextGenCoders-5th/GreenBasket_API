@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Address } from '@prisma/client';
-import { VendorsService } from 'src/api/vendors/vendors.service';
+import { VendorsService } from 'src/api/vendors/vendors/vendors.service';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 import { UpdateVendorAddressDto } from '../../dto/vendors/update-vendor-address.dto';

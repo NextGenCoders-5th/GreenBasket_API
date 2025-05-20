@@ -7,7 +7,7 @@ import { FindAllProductsProvider } from './providers/find-all-products.provider'
 import { FindOneProductProvider } from './providers/find-one-product.provider';
 import { FindProductByIdProvider } from './providers/find-product-by-id.provider';
 import { UpdateProductByIdProvider } from './providers/update-product-by-id.provider';
-import { VendorsModule } from '../vendors/vendors.module';
+import { VendorsModule } from '../vendors/vendors/vendors.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
 

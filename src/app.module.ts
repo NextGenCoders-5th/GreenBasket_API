@@ -11,7 +11,7 @@ import { OrdersModule } from './api/orders/orders.module';
 import { PaymentsModule } from './api/payments/payments.module';
 import { ProductsModule } from './api/products/products.module';
 import { UsersModule } from './api/users/users.module';
-import { VendorsModule } from './api/vendors/vendors.module';
+import { VendorsModule } from './api/vendors/vendors/vendors.module';
 import { ConfigurationModule } from './common/configuration/configuration.module';
 import { FileUploadModule } from './common/file-upload/file-upload.module';
 import { InterceptorsModule } from './common/interceptors/interceptors.module';
