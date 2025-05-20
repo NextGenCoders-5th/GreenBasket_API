@@ -12,7 +12,7 @@ import { FindAllVendorOrdersProvider } from './providers/find-all-vendor-orders.
 import { FindOrderByIdProvider } from './providers/find-order-by-id.provider';
 import { UpdateOrderStatusByIdProvider } from './providers/update-order-status-by-id.provider';
 import { FindOneOrderProvider } from './providers/find-one-order.provider';
-import { VendorsModule } from '../vendors/vendors.module';
+import { VendorsModule } from '../vendors/vendors/vendors.module';
 
 @Module({
   controllers: [OrdersController],

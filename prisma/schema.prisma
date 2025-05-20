@@ -18,19 +18,24 @@ model User {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
-  first_name          String?
-  last_name           String?
+  first_name                      String?
+  last_name                       String?
   // incase users dont have an email address
-  email               String
-  phone_number        String       @unique
-  password            String
-  profile_picture     String?
-  role                UserRole     @default(CUSTOMER)
-  status              UserStatus   @default(ACTIVE)
-  authProvider        AuthProvider @default(EMAIL)
-  is_onboarding       Boolean      @default(true)
+  email                           String
+  phone_number                    String                  @unique
+  password                        String
+  profile_picture                 String?
+  role                            UserRole                @default(CUSTOMER)
+  status                          UserStatus              @default(ACTIVE)
+  authProvider                    AuthProvider            @default(EMAIL)
+  is_onboarding                   Boolean                 @default(true)
   // this field is true when admin create a user. user should set his own password.
-  need_reset_password Boolean      @default(false)
+  need_reset_password             Boolean                 @default(false)
+  idPhoto_front                   String?
+  idPhoto_back                    String?
+  verify_status                   UserAccountVerifyStatus @default(UNVERIFIED)
+  reset_password_token            String?
+  reset_password_token_expires_at DateTime?
 
   // user may or may not be a vendor
   vendor  Vendor?
@@ -49,21 +54,128 @@ model Vendor {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
-  business_name  String
-  business_email String       @unique
-  phone_number   String       @unique
-  logo_url       String?
-  status         VendorStatus @default(PENDING)
+  business_name     String
+  business_email    String       @unique
+  phone_number      String       @unique
+  logo_url          String?
+  status            VendorStatus @default(PENDING)
+  have_bank_details Boolean      @default(false)
 
   // user may or may not be a vendor
-  user     User      @relation(fields: [userId], references: [id])
-  userId   String    @unique
+  user              User               @relation(fields: [userId], references: [id])
+  userId            String             @unique
   // one vendor many addresses
-  address  Address[]
+  address           Address[]
   // one vendor many products
-  products Product[]
+  products          Product[]
   // one vendor may have many orders
-  orders   Order[]
+  orders            Order[]
+  VendorBankAccount VendorBankAccount?
+  VendorBalance     VendorBalance?
+}
+
+model VendorBankAccount {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  account_name   String
+  account_number String
+  bank_name      String
+  bank_code      String
+  currency       String @default("ETB")
+  // status         AccountStatus @default(ACTIVE)
+  // branch_name    String?
+  // swift_code     String?
+  // is_default     Boolean       @default(false)
+  // is_verified    Boolean       @default(false)
+  // last_used_at   DateTime?
+  // verification_documents String[]
+  // verified_at            DateTime?
+  // verified_by            String? // Admin user ID who verified the account
+
+  // One-to-one relation with Vendor
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendorId String @unique
+
+  @@index([vendorId])
+}
+
+model VendorBalance {
+  id        String   @id @default(uuid())
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  // Total amount earned from all successful orders
+  total_earnings      Decimal @default(0) @db.Decimal(10, 2)
+  // Amount available for withdrawal (total_earnings - pending_withdrawals - withdrawn_amount)
+  available_balance   Decimal @default(0) @db.Decimal(10, 2)
+  // Total amount withdrawn so far
+  withdrawn_amount    Decimal @default(0) @db.Decimal(10, 2)
+  // Amount in pending withdrawal requests
+  pending_withdrawals Decimal @default(0) @db.Decimal(10, 2)
+
+  // One-to-one relation with Vendor
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendorId String @unique
+
+  // One-to-many relation with VendorTransaction
+  transactions        VendorTransaction[]
+  // One-to-many relation with WithdrawalRequest
+  withdrawal_requests WithdrawalRequest[]
+
+  @@index([vendorId])
+}
+
+model VendorTransaction {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Amount of the transaction
+  amount       Decimal
+  // Transaction type (e.g., ORDER_PAYMENT, WITHDRAWAL, REFUND)
+  type         TransactionType   @default(WITHDRAWAL)
+  // Status of the transaction
+  status       TransactionStatus @default(PENDING)
+  // Reference to the related entity (order ID, withdrawal ID, etc.)
+  reference_id String?
+  // Additional transaction details
+  description  String?
+
+  // Many-to-one relation with VendorBalance
+  vendor_balance    VendorBalance @relation(fields: [vendor_balance_id], references: [id])
+  vendor_balance_id String
+
+  @@index([vendor_balance_id])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model WithdrawalRequest {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Amount requested for withdrawal
+  amount                Decimal                 @db.Decimal(10, 2)
+  // Status of the withdrawal request
+  status                WithdrawalStatus        @default(PENDING)
+  // Payment method details (bank account, mobile money, etc.)
+  payment_method        WithdrawalPaymentMethod @default(CHAPA)
+  // Notes/comments (from vendor or admin)
+  notes                 String?
+  // When the withdrawal was processed
+  processed_at          DateTime?
+  // Transaction reference after processing
+  transaction_reference String?
+
+  // Many-to-one relation with VendorBalance
+  vendor_balance    VendorBalance @relation(fields: [vendor_balance_id], references: [id])
+  vendor_balance_id String
+
+  @@index([vendor_balance_id])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model Address {
@@ -175,7 +287,7 @@ model Order {
   receivedAt  DateTime?
 
   cart   Cart   @relation(fields: [cartId], references: [id])
-  cartId String
+  cartId String @unique
 
   // ensures only one order can ever exist for a cart
   OrderItems OrderItem[]
@@ -189,6 +301,10 @@ model Order {
   // Shipping/delivery address. it should be one of the customers address else the default customer address
   Adress     Address     @relation(fields: [addressId], references: [id])
   addressId  String
+
+  @@index([userId]) // Added index for better query performance
+  @@index([vendorId]) // Added index for better query performance
+  @@index([addressId]) // Added index for better query performance
 }
 
 model OrderItem {
@@ -259,6 +375,13 @@ enum UserStatus {
   DELETED
 }
 
+enum UserAccountVerifyStatus {
+  UNVERIFIED
+  REQUESTED
+  VERIFIED
+  DECLINED
+}
+
 enum AuthProvider {
   EMAIL
   GOOGLE
@@ -320,4 +443,40 @@ enum PaymentMethod {
   CASH_ON_DELIVERY
   STRIPE
   CHAPA
+}
+
+enum TransactionType {
+  WITHDRAWAL // Withdrawal to vendor
+  REFUND // Refund to customer
+  ADJUSTMENT // Manual adjustment by admin
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// enum AccountStatus {
+//   ACTIVE
+//   INACTIVE
+//   DELETED
+// }
+
+enum WithdrawalStatus {
+  PENDING // Initial request
+  APPROVED // Approved by admin
+  PROCESSING // Being processed
+  COMPLETED // Successfully transferred
+  REJECTED // Rejected by admin
+  CANCELLED // Cancelled by vendor
+  FAILED // Transfer failed
+}
+
+enum WithdrawalPaymentMethod {
+  BANK_TRANSFER
+  MOBILE_MONEY
+  CHAPA
+  OTHER
 }

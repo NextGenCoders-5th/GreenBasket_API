@@ -3,12 +3,14 @@ import { InitializeOrderPaymentProvider } from './providers/initialize-order-pay
 import { VerifyOrderPaymentProvider } from './providers/verify-order-payment.provider';
 import { InitializeOrderPaymentDto } from './dtos/initialize-order-payment.dto';
 import { VerifyOrderPaymentDto } from './dtos/verify-order-payment.dto';
+import { FindSupportedBankInfosProvider } from './providers/find-supported-bank-infos.provider';
 
 @Injectable()
 export class ChapaService {
   constructor(
     private readonly initializeOrderPaymentProvider: InitializeOrderPaymentProvider,
     private readonly verifyOrderPaymentProvider: VerifyOrderPaymentProvider,
+    private readonly findSupportedBankInfosProvider: FindSupportedBankInfosProvider,
   ) {}
 
   initializeOrderPayment(initializeOrderPaymentDto: InitializeOrderPaymentDto) {
@@ -21,5 +23,9 @@ export class ChapaService {
     return this.verifyOrderPaymentProvider.verifyOrderPayment(
       verifyOrderPaymentDto,
     );
+  }
+
+  findSupportedBankInfos() {
+    return this.findSupportedBankInfosProvider.findSupportedBankInfos();
   }
 }

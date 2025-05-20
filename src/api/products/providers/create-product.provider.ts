@@ -7,7 +7,7 @@ import { Category } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 import { CreateProductDto } from '../dto/create-product.dto';
-import { VendorsService } from 'src/api/vendors/vendors.service';
+import { VendorsService } from 'src/api/vendors/vendors/vendors.service';
 
 @Injectable()
 export class CreateProductProvider {

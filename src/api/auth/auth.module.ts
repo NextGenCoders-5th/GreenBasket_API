@@ -15,6 +15,10 @@ import { RefreshTokenProvider } from './providers/jwt-token/refresh-token.provid
 import { SignInProvider } from './providers/sign-in/sign-in.provider';
 import { SignUpProvider } from './providers/sign-up/sign-up.provider';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
+import { ForgotPasswordProvider } from './providers/password-reset/forgot-password.provider';
+import { ResetPasswordProvider } from './providers/password-reset/reset-password.provider';
+import { EmailModule } from 'src/common/email/email.module';
+import { MessageModule } from 'src/common/message/message.module';
 
 @Module({
   controllers: [AuthController],
@@ -31,9 +35,13 @@ import { PrismaModule } from 'src/common/prisma/prisma.module';
     RefreshTokenProvider,
     SignInProvider,
     SignUpProvider,
+    ForgotPasswordProvider,
+    ResetPasswordProvider,
   ],
   imports: [
     PrismaModule,
+    EmailModule,
+    MessageModule,
     ConfigModule.forFeature(jwtConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],

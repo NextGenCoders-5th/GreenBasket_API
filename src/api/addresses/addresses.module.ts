@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { UsersModule } from '../users/users.module';
-import { VendorsModule } from '../vendors/vendors.module';
+import { VendorsModule } from '../vendors/vendors/vendors.module';
 import { AddressesController } from './addresses.controller';
 import { AddressesService } from './addresses.service';
 import { CreateUserAddressProvider } from './providers/users/create-user-address.provider';

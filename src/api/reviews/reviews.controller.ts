@@ -10,7 +10,7 @@ import {
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { ActiveUser, Role } from '../auth/decorators';
+import { ActiveUser, Auth, Role } from '../auth/decorators';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -18,13 +18,14 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
+import { AuthType } from '../auth/enums/auth-type.enum';
 
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @ApiOperation({
-    summary: 'Get all reviews',
+    summary: 'Create Review',
   })
   @ApiBody({
     type: CreateReviewDto,
@@ -61,6 +62,7 @@ export class ReviewsController {
     description: 'Product ID',
     required: true,
   })
+  @Auth(AuthType.NONE)
   @Get('product/:productId')
   findReviewsByProductId(@Param('productId') productId: string) {
     return this.reviewsService.findReviewsByProductId(productId);
@@ -75,6 +77,7 @@ export class ReviewsController {
     description: 'Review ID',
     required: true,
   })
+  @Auth(AuthType.NONE)
   @Get(':id')
   findReviewById(@Param('id') id: string) {
     return this.reviewsService.findReviewById(id);

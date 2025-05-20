@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -24,10 +25,19 @@ import { UserRole } from '@prisma/client';
 import { ActiveUser, Auth, Role } from '../auth/decorators';
 import { AuthType } from '../auth/enums/auth-type.enum';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateProfilePictureDto, UpdateUserDto } from './dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  CreateUserDto,
+  UpdateProfilePictureDto,
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from './dto';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { FileUploadService } from 'src/common/file-upload/file-upload.service';
 import { FileUploadDirNames } from 'src/lib/constants/file-upload-dir-names';
+import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 
 @Controller('users')
 export class UsersController {
@@ -76,6 +86,91 @@ export class UsersController {
       profilePicture: this.fileUploadService.getFilePath(profilePicture),
     };
     return this.usersService.updateProfilePicture(id, updateProfilePictureDto);
+  }
+
+  @ApiOperation({
+    summary: 'Update user password',
+    description: 'Update user password',
+  })
+  @ApiBody({
+    type: UpdateUserPasswordDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @Patch('account/password')
+  updateUserPassword(
+    @ActiveUser('sub') id: string,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    return this.usersService.updateUserPassword(id, updateUserPasswordDto);
+  }
+
+  @ApiOperation({
+    summary:
+      'Complete users onboarding process / complete user profile information',
+    description:
+      'Complete users onboarding process / complete user profile information',
+  })
+  @ApiBody({
+    type: CompleteOnboardingDto,
+    required: true,
+  })
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'idPhoto_front', maxCount: 1 },
+        { name: 'idPhoto_back', maxCount: 1 },
+        { name: 'profile_picture', maxCount: 1 },
+      ],
+      FileUploadService.saveImageToStorage({
+        dirName: FileUploadDirNames.user,
+      }),
+    ),
+  )
+  @Patch('account/complete-onboarding')
+  completeOnboarding(
+    @Body() completeOnboardingDto: CompleteOnboardingDto,
+    @ActiveUser('sub') userId: string,
+    @UploadedFiles()
+    files: {
+      idPhoto_front: Express.Multer.File;
+      idPhoto_back: Express.Multer.File;
+      profile_picture: Express.Multer.File;
+    },
+  ) {
+    if (
+      !files.idPhoto_back[0] ||
+      !files.idPhoto_front ||
+      !files.profile_picture
+    ) {
+      throw new BadRequestException(
+        'please provide all required fields. identification card photo and profile picture are required.',
+      );
+    }
+    completeOnboardingDto.userId = userId;
+    completeOnboardingDto.idPhoto_front = this.fileUploadService.getFilePath(
+      files.idPhoto_front[0],
+    );
+    completeOnboardingDto.idPhoto_back = this.fileUploadService.getFilePath(
+      files.idPhoto_back[0],
+    );
+    completeOnboardingDto.profile_picture = this.fileUploadService.getFilePath(
+      files.profile_picture[0],
+    );
+    return this.usersService.completeOnboarding(completeOnboardingDto);
+  }
+
+  @ApiOperation({
+    summary: 'request account verification for users',
+    description: 'request account verification for users',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER)
+  @Patch('account/request-account-verification')
+  requestAccountVerification(@ActiveUser('sub') userId: string) {
+    return this.usersService.requestAccountVerification(userId);
   }
 
   @ApiOperation({

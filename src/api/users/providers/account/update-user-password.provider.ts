@@ -31,7 +31,7 @@ export class UpdateUserPasswordProvider {
     }
 
     // compare if the old password is correct password
-    const isCorrect = this.hashingProvider.comparePassword(
+    const isCorrect = await this.hashingProvider.comparePassword(
       oldPassword,
       user.password,
     );

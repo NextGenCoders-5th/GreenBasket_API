@@ -13,6 +13,8 @@ import { FindOneUserProvider } from './providers/find-one-user.provider';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
+import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
+import { RequestAccountVerificationProvider } from './providers/account/request-account-verification.provider';
 
 @Module({
   controllers: [UsersController],
@@ -27,6 +29,8 @@ import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
     UpdateUserDataProvider,
     UpdateUserPasswordProvider,
     UpdateProfilePictureProvider,
+    CompleteOnboardingProvider,
+    RequestAccountVerificationProvider,
   ],
   imports: [PrismaModule, AuthModule, FileUploadModule],
   exports: [UsersService],

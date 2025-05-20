@@ -28,9 +28,11 @@ export class FileUploadService {
   }
 
   public static saveImageToStorage({ dirName }: { dirName: string }) {
-    const uploadsDirRoot = path.resolve(
-      __dirname,
-      `../../../public/uploads/${dirName}`,
+    const uploadsDirRoot = path.join(
+      process.cwd(),
+      'public',
+      'uploads',
+      dirName,
     );
 
     // Ensure the uploads directory exists
@@ -81,11 +83,7 @@ export class FileUploadService {
       fullFilePath.startsWith('https://')
     ) {
       const relativePath = fullFilePath.split('/uploads/')[1];
-      filePath = path.resolve(
-        __dirname,
-        '../../../public/uploads',
-        relativePath,
-      );
+      filePath = path.join(process.cwd(), '/public/uploads', relativePath);
 
       console.log('file path to be removed from the folder...', filePath);
 

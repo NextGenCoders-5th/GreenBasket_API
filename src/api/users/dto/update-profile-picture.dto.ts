@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export default class UpdateProfilePictureDto {
+export class UpdateProfilePictureDto {
   @ApiProperty({
     description: 'Profile picture of the user (file upload)',
     type: 'string',
