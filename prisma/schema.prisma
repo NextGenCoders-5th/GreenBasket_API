@@ -24,6 +24,8 @@ model User {
   email                           String
   phone_number                    String                  @unique
   password                        String
+  date_of_birth                   DateTime?
+  gender                          Gender?
   profile_picture                 String?
   role                            UserRole                @default(CUSTOMER)
   status                          UserStatus              @default(ACTIVE)
@@ -47,6 +49,11 @@ model User {
   // one user may have many orders
   cart   Cart[]
   Review Review[]
+}
+
+enum Gender {
+  male
+  female
 }
 
 model Vendor {
@@ -82,7 +89,7 @@ model VendorBankAccount {
   account_name   String
   account_number String
   bank_name      String
-  bank_code      String
+  // bank_code      String
   currency       String @default("ETB")
   // status         AccountStatus @default(ACTIVE)
   // branch_name    String?
