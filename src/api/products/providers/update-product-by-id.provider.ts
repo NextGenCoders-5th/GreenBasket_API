@@ -40,7 +40,7 @@ export class UpdateProductByIdProvider {
     });
 
     if (!product) {
-      throw new NotFoundException('product not found.');
+      throw new NotFoundException('vendor has not this product');
     }
 
     // Validate category IDs
