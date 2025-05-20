@@ -11,7 +11,6 @@ import { OrdersModule } from './api/orders/orders.module';
 import { PaymentsModule } from './api/payments/payments.module';
 import { ProductsModule } from './api/products/products.module';
 import { UsersModule } from './api/users/users.module';
-import { VendorsModule } from './api/vendors/vendors/vendors.module';
 import { ConfigurationModule } from './common/configuration/configuration.module';
 import { FileUploadModule } from './common/file-upload/file-upload.module';
 import { InterceptorsModule } from './common/interceptors/interceptors.module';
@@ -22,11 +21,11 @@ import { ReviewsModule } from './api/reviews/reviews.module';
 import { AppController } from './app.controller';
 import { EmailModule } from './common/email/email.module';
 import { MessageModule } from './common/message/message.module';
+import { VendorsRootModule } from './api/vendors/vendors_root.module';
 
 @Module({
   imports: [
     UsersModule,
-    VendorsModule,
     AddressesModule,
     OrdersModule,
     OrderItemsModule,
@@ -57,6 +56,8 @@ import { MessageModule } from './common/message/message.module';
     EmailModule,
 
     MessageModule,
+
+    VendorsRootModule,
   ],
   controllers: [AppController],
 })
