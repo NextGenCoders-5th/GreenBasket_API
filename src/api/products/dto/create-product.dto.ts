@@ -78,10 +78,10 @@ export class CreateProductDto {
     if (Array.isArray(value)) return value; // Already an array, return as is
     if (
       typeof value === 'string' &&
-      value.startsWith('[') &&
-      value.endsWith(']')
+      value.includes('[') &&
+      value.includes(']')
     ) {
-      value = value.slice(1, -1);
+      value = String(value.slice(2, -2));
     }
     if (typeof value === 'string') {
       return value.includes(',')
