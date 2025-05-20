@@ -67,8 +67,7 @@ export class CategoriesController {
   @ApiOperation({
     summary: 'Find All Categories.',
   })
-  @ApiBearerAuth()
-  @Role(UserRole.ADMIN)
+  @Auth(AuthType.NONE)
   @Get()
   findAllCategories() {
     return this.categoriesService.findAllCategories();
