@@ -52,10 +52,10 @@ export class FileUploadService {
         },
       }),
       fileFilter: (_req, file, cb) => {
-        if (!validMimeTypes.includes(file.mimetype)) {
+        if (!file.mimetype.startsWith('image')) {
           return cb(
             new BadRequestException(
-              'Invalid file type! Only PNG, JPG, and JPEG are allowed.',
+              'Invalid file type! only image can be uploaded',
             ),
             false,
           );
