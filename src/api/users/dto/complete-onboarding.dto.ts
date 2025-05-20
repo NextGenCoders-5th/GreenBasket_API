@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Gender } from '@prisma/client';
+import {
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MinDate,
+} from 'class-validator';
 
 export class CompleteOnboardingDto {
   @ApiProperty({
@@ -15,6 +22,22 @@ export class CompleteOnboardingDto {
   @IsNotEmpty()
   @IsString()
   last_name: string;
+
+  @ApiProperty({
+    description: 'date of birth.',
+  })
+  @IsNotEmpty()
+  @IsDateString()
+  @MinDate(new Date('1950-01-01'))
+  date_of_birth: string;
+
+  @ApiProperty({
+    description: 'gender of user',
+    enum: Gender,
+  })
+  @IsNotEmpty()
+  @IsEnum(Gender)
+  gender: Gender;
 
   @ApiProperty({
     description: 'Profile picture of the user (file upload)',

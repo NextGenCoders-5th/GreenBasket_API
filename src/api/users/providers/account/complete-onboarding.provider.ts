@@ -14,6 +14,8 @@ export class CompleteOnboardingProvider {
     const {
       first_name,
       last_name,
+      date_of_birth,
+      gender,
       idPhoto_back,
       idPhoto_front,
       userId,
@@ -27,6 +29,8 @@ export class CompleteOnboardingProvider {
         data: {
           first_name,
           last_name,
+          date_of_birth,
+          gender,
           idPhoto_front,
           idPhoto_back,
           profile_picture,
