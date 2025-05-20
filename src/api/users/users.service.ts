@@ -9,14 +9,19 @@ import { User } from '@prisma/client';
 import {
   CreateUserDto,
   UpdateProfilePictureDto,
+  UpdateUserDataDto,
   UpdateUserDto,
   UpdateUserPasswordDto,
+  VerifyUserDto,
 } from './dto';
 import { UpdateProfilePictureProvider } from './providers/account/update-profile-picture.provider';
 import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
 import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { RequestAccountVerificationProvider } from './providers/account/request-account-verification.provider';
 import { UpdateUserPasswordProvider } from './providers/account/update-user-password.provider';
+import { VerifyUserProvider } from './providers/account/verify-user.provider';
+import { FindAllVerificationRequestsProvider } from './providers/account/find-all-verification-requests.provider';
+import { UpdateUserDataProvider } from './providers/account/update-user-data.provider';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +36,9 @@ export class UsersService {
     private readonly updateProfilePictureProvider: UpdateProfilePictureProvider,
     private readonly completeOnboardingProvider: CompleteOnboardingProvider,
     private readonly updateUserPasswordProvider: UpdateUserPasswordProvider,
+    private readonly verifyUserProvider: VerifyUserProvider,
+    private readonly findAllVerificationRequestsProvider: FindAllVerificationRequestsProvider,
+    private readonly updateUserDataProvider: UpdateUserDataProvider,
   ) {}
 
   createUser(createUserDto: CreateUserDto) {
@@ -75,6 +83,10 @@ export class UsersService {
     );
   }
 
+  updateUserData(id: string, updateUserDataDto: UpdateUserDataDto) {
+    return this.updateUserDataProvider.updateUserData(id, updateUserDataDto);
+  }
+
   completeOnboarding(completeOnboardingDto: CompleteOnboardingDto) {
     return this.completeOnboardingProvider.completeOnboarding(
       completeOnboardingDto,
@@ -85,5 +97,11 @@ export class UsersService {
     return this.requestAccountVerificationProvider.requestAccountVerification(
       userId,
     );
+  }
+  verifyUser(verifyUserDto: VerifyUserDto) {
+    return this.verifyUserProvider.verifyUser(verifyUserDto);
+  }
+  findAllVerificationRequests() {
+    return this.findAllVerificationRequestsProvider.findAllVerificationRequests();
   }
 }

@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
+import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { AuthModule } from '../auth/auth.module';
+import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
+import { FindAllVerificationRequestsProvider } from './providers/account/find-all-verification-requests.provider';
+import { RequestAccountVerificationProvider } from './providers/account/request-account-verification.provider';
 import { UpdateProfilePictureProvider } from './providers/account/update-profile-picture.provider';
 import { UpdateUserDataProvider } from './providers/account/update-user-data.provider';
 import { UpdateUserPasswordProvider } from './providers/account/update-user-password.provider';
@@ -12,9 +16,7 @@ import { UpdateUserByIdProvider } from './providers/crud/update-user-by-id.provi
 import { FindOneUserProvider } from './providers/find-one-user.provider';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
-import { CompleteOnboardingProvider } from './providers/account/complete-onboarding.provider';
-import { RequestAccountVerificationProvider } from './providers/account/request-account-verification.provider';
+import { VerifyUserProvider } from './providers/account/verify-user.provider';
 
 @Module({
   controllers: [UsersController],
@@ -31,6 +33,8 @@ import { RequestAccountVerificationProvider } from './providers/account/request-
     UpdateProfilePictureProvider,
     CompleteOnboardingProvider,
     RequestAccountVerificationProvider,
+    FindAllVerificationRequestsProvider,
+    VerifyUserProvider,
   ],
   imports: [PrismaModule, AuthModule, FileUploadModule],
   exports: [UsersService],

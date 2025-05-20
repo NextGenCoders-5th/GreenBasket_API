@@ -17,5 +17,5 @@ export class VerifyUserDto {
   })
   @IsEnum(UserAccountVerifyStatus)
   @IsNotEmpty()
-  verify_status: string;
+  verify_status: UserAccountVerifyStatus;
 }
