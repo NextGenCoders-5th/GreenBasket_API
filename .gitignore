@@ -57,3 +57,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # exclude public files
 public/
+
+
+# compodoc
+documentation/
