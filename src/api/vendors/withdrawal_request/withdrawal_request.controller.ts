@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('withdrawal-request')
+@Controller('vendor/withdrawal-request')
 export class WithdrawalRequestController {}
