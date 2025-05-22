@@ -77,10 +77,11 @@ export class CreateVendorProvider {
             userId,
           },
         });
-        await this.vendorBalanceService.initializeVendorBalance(vendor.id);
+        // Initialize balance using the same transaction
+        await this.vendorBalanceService.initializeVendorBalance(vendor.id, tx);
 
         // update user role to vendor
-        await this.prisma.user.update({
+        await tx.user.update({
           where: { id: user.id },
           data: { role: UserRole.VENDOR },
         });

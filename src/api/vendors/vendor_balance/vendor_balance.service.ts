@@ -35,9 +35,12 @@ export class VendorBalanceService {
   }
 
   // Initialize vendor balance (called when vendor is created)
-  async initializeVendorBalance(vendorId: string) {
+  async initializeVendorBalance(vendorId: string, tx?: any) {
     try {
-      const balance = await this.prisma.vendorBalance.create({
+      // Use the passed transaction or fallback to this.prisma
+      const prisma = tx || this.prisma;
+
+      const balance = await prisma.vendorBalance.create({
         data: {
           vendor: { connect: { id: vendorId } },
         },
