@@ -76,6 +76,7 @@ export class FindAllProductsProvider {
               id: true,
               business_name: true,
               business_email: true,
+              logo_url: true,
             },
           },
           categories: {

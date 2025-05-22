@@ -14,6 +14,7 @@ import { UpdateUserAddressProvider } from './providers/users/update-user-address
 import { CreateVendorAddressProvider } from './providers/vendors/create-vendor-address.provider';
 import { DeleteVendorAddressByIdProvider } from './providers/vendors/delete-vendor-address-by-id.provider';
 import { UpdateVendorAddressProvider } from './providers/vendors/update-vendor-address.provider';
+import { FindUserAddressByIdProvider } from './providers/users/find-user-address-by-id.provider';
 
 @Injectable()
 export class AddressesService {
@@ -27,6 +28,7 @@ export class AddressesService {
     private readonly updateUserAddressProvider: UpdateUserAddressProvider,
     private readonly updateVendorAddressProvider: UpdateVendorAddressProvider,
     private readonly deleteVendorAddressByIdProvider: DeleteVendorAddressByIdProvider,
+    private readonly findUserAddressByIdProvider: FindUserAddressByIdProvider,
   ) {}
 
   createUserAddress(createUserAddressDto: CreateUserAddressDto) {
@@ -53,6 +55,10 @@ export class AddressesService {
     return this.updateUserAddressProvider.updateUserAddress(
       updateUserAddressDto,
     );
+  }
+
+  findUserAdressById(userId: string) {
+    return this.findUserAddressByIdProvider.findUserAdressById(userId);
   }
 
   updateVendorAddress(updateVendorAddressDto: UpdateVendorAddressDto) {
