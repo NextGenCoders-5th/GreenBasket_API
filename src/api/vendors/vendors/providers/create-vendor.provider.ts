@@ -10,6 +10,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 import { CreateVendorDto } from '../dto/create-vendor.dto';
 import { FindOneVendorProvider } from './find-one-vendor.provider';
+import { VendorBalanceService } from '../../vendor_balance/vendor_balance.service';
 
 @Injectable()
 export class CreateVendorProvider {
@@ -17,6 +18,7 @@ export class CreateVendorProvider {
     private readonly prisma: PrismaService,
     private readonly usersService: UsersService,
     private readonly findOneVendorProvider: FindOneVendorProvider,
+    private readonly vendorBalanceService: VendorBalanceService,
   ) {}
 
   public async createVendor(createVendorDto: CreateVendorDto) {
@@ -65,14 +67,17 @@ export class CreateVendorProvider {
 
     try {
       // create vendor
-      vendor = await this.prisma.vendor.create({
-        data: {
-          business_email,
-          business_name,
-          phone_number,
-          logo_url,
-          userId,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        vendor = await tx.vendor.create({
+          data: {
+            business_email,
+            business_name,
+            phone_number,
+            logo_url,
+            userId,
+          },
+        });
+        await this.vendorBalanceService.initializeVendorBalance(vendor.id);
       });
       // update user role to vendor
       await this.prisma.user.update({
