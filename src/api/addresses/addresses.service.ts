@@ -15,6 +15,7 @@ import { CreateVendorAddressProvider } from './providers/vendors/create-vendor-a
 import { DeleteVendorAddressByIdProvider } from './providers/vendors/delete-vendor-address-by-id.provider';
 import { UpdateVendorAddressProvider } from './providers/vendors/update-vendor-address.provider';
 import { FindUserAddressByIdProvider } from './providers/users/find-user-address-by-id.provider';
+import { FindVendorAddressesByIdProvider } from './providers/vendors/find-vendor-addresses-by-id.provider';
 
 @Injectable()
 export class AddressesService {
@@ -29,6 +30,7 @@ export class AddressesService {
     private readonly updateVendorAddressProvider: UpdateVendorAddressProvider,
     private readonly deleteVendorAddressByIdProvider: DeleteVendorAddressByIdProvider,
     private readonly findUserAddressByIdProvider: FindUserAddressByIdProvider,
+    private readonly findVendorAddressesByIdProvider: FindVendorAddressesByIdProvider,
   ) {}
 
   createUserAddress(createUserAddressDto: CreateUserAddressDto) {
@@ -64,6 +66,12 @@ export class AddressesService {
   updateVendorAddress(updateVendorAddressDto: UpdateVendorAddressDto) {
     return this.updateVendorAddressProvider.updateVendorAddress(
       updateVendorAddressDto,
+    );
+  }
+
+  findVendorAdressesById(vendorId: string) {
+    return this.findVendorAddressesByIdProvider.findVendorAdressesById(
+      vendorId,
     );
   }
 
