@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,12 +9,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { ActiveUser, Role } from '../auth/decorators';
@@ -22,10 +25,15 @@ import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
 import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
 import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
 import { UpdateVendorAddressDto } from './dto/vendors/update-vendor-address.dto';
+import { IActiveUserData } from '../auth/interfaces/active-user-data.interface';
+import { UsersService } from '../users/users.service';
 
 @Controller('addresses')
 export class AddressesController {
-  constructor(private readonly addressesService: AddressesService) {}
+  constructor(
+    private readonly addressesService: AddressesService,
+    private readonly usersService: UsersService,
+  ) {}
 
   // createUserAddress
   @ApiOperation({
@@ -61,6 +69,37 @@ export class AddressesController {
   @Post('vendor')
   createVendorAddress(createVendorAddressDto: CreateVendorAddressDto) {
     return this.addressesService.createVendorAddress(createVendorAddressDto);
+  }
+
+  // FindUserAddressByIdProvider
+  @ApiOperation({
+    summary: 'Find User Address By User Id.',
+  })
+  @ApiQuery({
+    name: 'userId',
+    description:
+      'admins can get the address of a user by sending userId. but customers can get their own address only.',
+    required: false,
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.CUSTOMER, UserRole.ADMIN)
+  @Get('user')
+  async findUserAdressById(
+    @Query('userId') userId: string,
+    @ActiveUser() activeUserData: IActiveUserData,
+  ) {
+    const { role, sub } = activeUserData;
+    if (role === UserRole.CUSTOMER) {
+      userId = sub;
+    } else {
+      if (!userId) throw new BadRequestException('user id is required.');
+      // check if user exists
+      const user = await this.usersService.findOneUser({ id: userId });
+      if (!user) {
+        throw new BadRequestException('user not found.');
+      }
+    }
+    return this.addressesService.findUserAdressById(userId);
   }
 
   // findAllAddresses
