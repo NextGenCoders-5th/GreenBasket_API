@@ -68,7 +68,7 @@ export class UpdateVendorProvider {
       );
     }
     // remove file if new logo uploaded then update vendor
-    if (logo_url) {
+    if (logo_url && vendor.logo_url) {
       this.fileUploadService.removeFile(vendor.logo_url);
     }
 
