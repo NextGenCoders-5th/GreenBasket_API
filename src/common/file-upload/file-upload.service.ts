@@ -76,28 +76,40 @@ export class FileUploadService {
   }
 
   public removeFile(fullFilePath: string): void {
-    let filePath = fullFilePath;
+    try {
+      if (!fullFilePath) {
+        console.warn('No file path provided to remove');
+        return;
+      }
 
-    if (
-      fullFilePath.startsWith('http://') ||
-      fullFilePath.startsWith('https://')
-    ) {
-      const relativePath = fullFilePath.split('/uploads/')[1];
-      filePath = path.join(process.cwd(), '/public/uploads', relativePath);
+      let filePath: string;
 
-      console.log('file path to be removed from the folder...', filePath);
-
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`Error removing file: ${err.message}`);
+      if (
+        fullFilePath.startsWith('http://') ||
+        fullFilePath.startsWith('https://')
+      ) {
+        // Extract the relative path after 'uploads/'
+        const matches = fullFilePath.match(/\/uploads\/(.*)/);
+        if (!matches || !matches[1]) {
+          throw new Error('Invalid file path format');
         }
-      });
-    } else {
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`Error removing file: ${err.message}`);
-        }
-      });
+
+        filePath = path.join(process.cwd(), 'public', 'uploads', matches[1]);
+      } else {
+        // If it's already a local path
+        filePath = fullFilePath;
+      }
+
+      // Check if file exists before attempting to delete
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath); // Using sync version for simplicity
+        console.log(`File successfully removed: ${filePath}`);
+      } else {
+        console.warn(`File not found: ${filePath}`);
+      }
+    } catch (error) {
+      console.error('Error removing file:', error);
+      throw new BadRequestException(`Failed to remove file: ${error.message}`);
     }
   }
 }
