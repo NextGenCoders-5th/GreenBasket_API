@@ -15,7 +15,16 @@ export class FindUserByIdProvider {
     let user: User | undefined;
 
     try {
-      user = await this.prisma.user.findUnique({ where: { id } });
+      user = await this.prisma.user.findUnique({
+        where: { id },
+        include: {
+          Review: true,
+          address: true,
+          cart: true,
+          orders: true,
+          vendor: true,
+        },
+      });
     } catch (err) {
       console.log('find user by id', err);
       throw new InternalServerErrorException(

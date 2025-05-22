@@ -24,7 +24,7 @@ export class InitializeOrderPaymentProvider {
     let order: Prisma.OrderGetPayload<{ include: { User: true } }>;
 
     try {
-      order = await this.prisma.order.findFirst({
+      order = await this.prisma.order.findUnique({
         where: {
           id: orderId,
           userId,

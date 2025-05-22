@@ -453,9 +453,10 @@ enum PaymentMethod {
 }
 
 enum TransactionType {
-  WITHDRAWAL // Withdrawal to vendor
-  REFUND // Refund to customer
-  ADJUSTMENT // Manual adjustment by admin
+  ORDER_PAYMENT // When a vendor receives payment from a completed order
+  WITHDRAWAL // When a vendor withdraws money from their balance
+  REFUND // When a refund is processed for an order
+  ADJUSTMENT // For manual adjustments by admin
 }
 
 enum TransactionStatus {

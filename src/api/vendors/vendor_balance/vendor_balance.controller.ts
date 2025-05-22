@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('vendor-balance')
+@Controller('vendor/balance')
 export class VendorBalanceController {}
