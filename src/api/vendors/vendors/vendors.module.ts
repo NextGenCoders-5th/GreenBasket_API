@@ -10,6 +10,7 @@ import { UpdateVendorProvider } from './providers/update-vendor.provider';
 import { VendorsController } from './vendors.controller';
 import { VendorsService } from './vendors.service';
 import { UsersModule } from '../../users/users.module';
+import { VendorBalanceModule } from '../vendor_balance/vendor_balance.module';
 
 @Module({
   controllers: [VendorsController],
@@ -22,7 +23,7 @@ import { UsersModule } from '../../users/users.module';
     FindOneVendorProvider,
     FindVendorByIdProvider,
   ],
-  imports: [PrismaModule, FileUploadModule, UsersModule],
+  imports: [PrismaModule, FileUploadModule, UsersModule, VendorBalanceModule],
   exports: [VendorsService],
 })
 export class VendorsModule {}

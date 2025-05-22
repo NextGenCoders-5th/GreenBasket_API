@@ -78,11 +78,12 @@ export class CreateVendorProvider {
           },
         });
         await this.vendorBalanceService.initializeVendorBalance(vendor.id);
-      });
-      // update user role to vendor
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: { role: UserRole.VENDOR },
+
+        // update user role to vendor
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { role: UserRole.VENDOR },
+        });
       });
     } catch (err) {
       console.log('unable to create a vendor. please try again later.', err);
