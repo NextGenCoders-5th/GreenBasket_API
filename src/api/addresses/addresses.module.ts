@@ -15,6 +15,7 @@ import { UpdateVendorAddressProvider } from './providers/vendors/update-vendor-a
 import { DeleteVendorAddressByIdProvider } from './providers/vendors/delete-vendor-address-by-id.provider';
 import { DeleteAddressByIdProvider } from './providers/delete-address-by-id.provider';
 import { FindUserAddressByIdProvider } from './providers/users/find-user-address-by-id.provider';
+import { FindVendorAddressesByIdProvider } from './providers/vendors/find-vendor-addresses-by-id.provider';
 
 @Module({
   controllers: [AddressesController],
@@ -31,6 +32,7 @@ import { FindUserAddressByIdProvider } from './providers/users/find-user-address
     DeleteVendorAddressByIdProvider,
     DeleteAddressByIdProvider,
     FindUserAddressByIdProvider,
+    FindVendorAddressesByIdProvider,
   ],
   imports: [PrismaModule, UsersModule, VendorsModule],
   exports: [AddressesService],
