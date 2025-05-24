@@ -12,26 +12,37 @@ export class VendorBalanceService {
 
   // Get vendor balance
   async getVendorBalance(vendorId: string) {
-    const balance = await this.prisma.vendorBalance.findUnique({
-      where: { vendorId },
-      include: {
-        withdrawal_requests: {
-          where: { status: 'PENDING' },
-          take: 5,
-          orderBy: { createdAt: 'desc' },
+    try {
+      const balance = await this.prisma.vendorBalance.findUnique({
+        where: { vendorId },
+        include: {
+          withdrawal_requests: {
+            where: { status: 'PENDING' },
+            take: 5,
+            orderBy: { createdAt: 'desc' },
+          },
+          transactions: {
+            take: 10,
+            orderBy: { createdAt: 'desc' },
+          },
         },
-        transactions: {
-          take: 10,
-          orderBy: { createdAt: 'desc' },
-        },
-      },
-    });
+      });
 
-    if (!balance) {
-      throw new NotFoundException('Vendor balance not found');
+      if (!balance) {
+        throw new NotFoundException('Vendor balance not found');
+      }
+
+      return CreateApiResponse({
+        status: 'success',
+        message: 'getVendorBalance successfull',
+        data: balance,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(
+        'Unable to find vendor balance. please try again later.',
+      );
     }
-
-    return balance;
   }
 
   // Initialize vendor balance (called when vendor is created)
