@@ -45,10 +45,11 @@ model User {
   address Address?
 
   // one user may have many orders
-  orders Order[]
+  orders   Order[]
   // one user may have many orders
-  cart   Cart[]
-  Review Review[]
+  cart     Cart[]
+  Review   Review[]
+  Wishlist Wishlist[]
 }
 
 enum Gender {
@@ -245,6 +246,7 @@ model Product {
   categories Category[]
   OrderItems OrderItem[]
   CartItem   CartItem[]
+  Wishlist   Wishlist[]
 }
 
 model Cart {
@@ -367,6 +369,20 @@ model Review {
   OrderItem OrderItem @relation(fields: [orderItemId], references: [id])
 
   @@unique([userId, orderItemId], name: "unique_user_order_item")
+}
+
+model Wishlist {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productId String
+  userId    String
+
+  User    User    @relation(fields: [userId], references: [id])
+  Product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId], name: "unique_user_product_wishlist")
 }
 
 enum UserRole {

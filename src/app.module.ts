@@ -22,6 +22,7 @@ import { AppController } from './app.controller';
 import { EmailModule } from './common/email/email.module';
 import { MessageModule } from './common/message/message.module';
 import { VendorsRootModule } from './api/vendors/vendors_root.module';
+import { WishlistModule } from './api/wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -58,6 +59,8 @@ import { VendorsRootModule } from './api/vendors/vendors_root.module';
     MessageModule,
 
     VendorsRootModule,
+
+    WishlistModule,
   ],
   controllers: [AppController],
 })
