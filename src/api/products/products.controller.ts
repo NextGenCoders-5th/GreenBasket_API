@@ -79,6 +79,20 @@ export class ProductsController {
   }
 
   @ApiOperation({
+    summary: 'find products by category',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'category id',
+    required: true,
+  })
+  @Auth(AuthType.NONE)
+  @Get('category/:id')
+  findProductByCategory(@Param('id') categoryId: string) {
+    return this.productsService.findProductByCategory(categoryId);
+  }
+
+  @ApiOperation({
     summary: 'Find Product by ID',
   })
   @ApiParam({

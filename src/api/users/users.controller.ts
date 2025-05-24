@@ -66,6 +66,7 @@ export class UsersController {
     type: UpdateUserDataDto,
     required: true,
   })
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
   @Patch('account/update-my-data')
   updateUserData(

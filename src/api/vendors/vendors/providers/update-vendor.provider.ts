@@ -47,8 +47,9 @@ export class UpdateVendorProvider {
     }
     // fixeme
     // check if vendor already exists with the same email or phone number
+    let existingVendor: Vendor;
     try {
-      vendor = await this.prisma.vendor.findFirst({
+      existingVendor = await this.prisma.vendor.findFirst({
         where: {
           id: {
             not: id,
@@ -62,13 +63,13 @@ export class UpdateVendorProvider {
         'unable to find a vendor, please try again later.',
       );
     }
-    if (vendor) {
+    if (existingVendor) {
       throw new BadRequestException(
         'vendor already exists with the same phone number or business email. ',
       );
     }
     // remove file if new logo uploaded then update vendor
-    if (logo_url) {
+    if (logo_url && vendor.logo_url) {
       this.fileUploadService.removeFile(vendor.logo_url);
     }
 

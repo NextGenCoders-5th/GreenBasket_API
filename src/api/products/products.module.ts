@@ -10,6 +10,7 @@ import { UpdateProductByIdProvider } from './providers/update-product-by-id.prov
 import { VendorsModule } from '../vendors/vendors/vendors.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
+import { FindProductsByCategoryProvider } from './providers/find-products-by-category.provider';
 
 @Module({
   controllers: [ProductsController],
@@ -21,6 +22,7 @@ import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
     FindOneProductProvider,
     FindAllProductsProvider,
     UpdateProductByIdProvider,
+    FindProductsByCategoryProvider,
   ],
   imports: [VendorsModule, PrismaModule, FileUploadModule],
   exports: [ProductsService],
