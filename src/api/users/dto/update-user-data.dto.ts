@@ -9,6 +9,8 @@ export class UpdateUserDataDto extends IntersectionType(
       'userId',
       'first_name',
       'last_name',
+      'idPhoto_back',
+      'idPhoto_front',
     ] as const),
   ),
 ) {}
