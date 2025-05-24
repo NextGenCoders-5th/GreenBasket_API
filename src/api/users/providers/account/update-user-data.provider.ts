@@ -23,7 +23,8 @@ export class UpdateUserDataProvider {
   ) {
     // check if user still exists
     let user: User | undefined;
-    const { email, firstName, lastName, phoneNumber } = updateUserDataDto;
+    const { email, firstName, lastName, phoneNumber, date_of_birth, gender } =
+      updateUserDataDto;
 
     try {
       user = await this.prisma.user.findUnique({
@@ -71,6 +72,10 @@ export class UpdateUserDataProvider {
     updatedBody.last_name = lastName ?? user.last_name;
     updatedBody.email = email ?? user.email;
     updatedBody.phone_number = phoneNumber ?? user.phone_number;
+    updatedBody.date_of_birth = date_of_birth
+      ? new Date(date_of_birth)
+      : user.date_of_birth;
+    updatedBody.gender = gender ?? user.gender;
 
     try {
       user = await this.prisma.user.update({

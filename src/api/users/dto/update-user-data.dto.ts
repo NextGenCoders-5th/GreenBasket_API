@@ -11,6 +11,7 @@ export class UpdateUserDataDto extends IntersectionType(
       'last_name',
       'idPhoto_back',
       'idPhoto_front',
+      'profile_picture',
     ] as const),
   ),
 ) {}
