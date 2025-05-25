@@ -16,8 +16,8 @@ import {
   WithdrawalPaymentMethod,
   Gender,
 } from '@prisma/client';
-import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
@@ -344,14 +344,14 @@ async function main() {
   const orders = [];
   const cartsToCheckout = faker.helpers.arrayElements(
     carts.filter(
-      (c) => c.CartItems.length > 0 && c.status === CartStatus.ACTIVE,
+      (c) => c.CartItems?.length > 0 && c.status === CartStatus.ACTIVE,
     ),
     NUM_ORDERS_FROM_CARTS >
       carts.filter(
-        (c) => c.CartItems.length > 0 && c.status === CartStatus.ACTIVE,
+        (c) => c.CartItems?.length > 0 && c.status === CartStatus.ACTIVE,
       ).length
       ? carts.filter(
-          (c) => c.CartItems.length > 0 && c.status === CartStatus.ACTIVE,
+          (c) => c.CartItems?.length > 0 && c.status === CartStatus.ACTIVE,
         ).length
       : NUM_ORDERS_FROM_CARTS,
   ); // Select carts that have items and are active
