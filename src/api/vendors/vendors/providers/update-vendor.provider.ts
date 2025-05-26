@@ -54,7 +54,13 @@ export class UpdateVendorProvider {
     try {
       existingVendor = await this.prisma.vendor.findFirst({
         where: {
-          OR: [{ business_email }, { phone_number }],
+          NOT: {
+            id,
+          },
+          OR: [
+            business_email ? { business_email } : undefined,
+            phone_number ? { phone_number } : undefined,
+          ].filter(Boolean), // filters out undefined entries,
         },
       });
     } catch (err) {
