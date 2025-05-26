@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -54,7 +55,9 @@ export class UsersController {
   })
   @ApiBearerAuth()
   @Get('account/current-user')
-  findCurrentUser(@ActiveUser('sub') id: string) {
+  findCurrentUser(@Req() request: any) {
+    const data = request.user; // Assuming the user data is stored in the request object
+    const id = data?.sub;
     return this.usersService.findUserById(id);
   }
 
