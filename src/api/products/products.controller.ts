@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -19,6 +20,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { FileUploadService } from 'src/common/file-upload/file-upload.service';
@@ -29,12 +31,15 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
+import { IActiveUserData } from '../auth/interfaces/active-user-data.interface';
+import { VendorsService } from '../vendors/vendors/vendors.service';
 
 @Controller('products')
 export class ProductsController {
   constructor(
     private readonly productsService: ProductsService,
     private readonly fileUploadService: FileUploadService,
+    private readonly vendorService: VendorsService,
   ) {}
 
   @ApiOperation({
@@ -90,6 +95,41 @@ export class ProductsController {
   @Get('category/:id')
   findProductByCategory(@Param('id') categoryId: string) {
     return this.productsService.findProductByCategory(categoryId);
+  }
+
+  @ApiOperation({
+    summary: 'find products by vendor',
+  })
+  @ApiQuery({
+    name: 'id',
+    description:
+      'vendor id for fetching the products by vendor. optional for admins only.',
+    required: false,
+  })
+  @Role(UserRole.ADMIN, UserRole.VENDOR)
+  @Get('vendor')
+  async findProductsByVendor(
+    @ActiveUser() activeUserData: IActiveUserData,
+    @Query('id') id?: string,
+  ) {
+    const { role, sub } = activeUserData;
+
+    if (role === UserRole.ADMIN && !id) {
+      throw new BadRequestException(
+        'Vendor id is required to fetch products of a vendor.',
+      );
+    }
+
+    const vendor = await this.vendorService.findOneVendor({
+      ...(role === UserRole.ADMIN && { id }),
+      ...(role === UserRole.VENDOR && { userId: sub }),
+    });
+
+    if (!vendor) {
+      throw new BadRequestException('vendor not found.');
+    }
+
+    return this.productsService.findProductsByVendor(vendor.id);
   }
 
   @ApiOperation({

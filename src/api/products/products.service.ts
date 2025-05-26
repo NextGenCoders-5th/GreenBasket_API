@@ -13,6 +13,7 @@ import {
 import { IDeleteProductById } from './interfaces/delete-product-by-id.interface';
 import { GetProductsDto } from './dto/get-products.dto';
 import { FindProductsByCategoryProvider } from './providers/find-products-by-category.provider';
+import { FindProductsByVendorProvider } from './providers/find-products-by-vendor.provider';
 
 @Injectable()
 export class ProductsService {
@@ -24,6 +25,7 @@ export class ProductsService {
     private readonly findOneProductProvider: FindOneProductProvider,
     private readonly updateProductByIdProvider: UpdateProductByIdProvider,
     private readonly findProductsByCategoryProvider: FindProductsByCategoryProvider,
+    private readonly findProductsByVendorProvider: FindProductsByVendorProvider,
   ) {}
 
   createProduct(createProductDto: CreateProductDto) {
@@ -57,5 +59,9 @@ export class ProductsService {
     return this.findProductsByCategoryProvider.findProductByCategory(
       categoryId,
     );
+  }
+
+  findProductsByVendor(vendorId: string) {
+    return this.findProductsByVendorProvider.findProductsByVendor(vendorId);
   }
 }
