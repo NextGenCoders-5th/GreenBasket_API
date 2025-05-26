@@ -51,6 +51,18 @@ export class VendorBalanceService {
       // Use the passed transaction or fallback to this.prisma
       const prisma = tx || this.prisma;
 
+      const existingBalance = await prisma.vendorBalance.findUnique({
+        where: { vendorId },
+      });
+
+      if (existingBalance) {
+        return CreateApiResponse({
+          status: 'success',
+          message: 'Vendor has a balance initialized already.',
+          data: existingBalance,
+        });
+      }
+
       const balance = await prisma.vendorBalance.create({
         data: {
           vendor: { connect: { id: vendorId } },

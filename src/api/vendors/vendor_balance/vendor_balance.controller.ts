@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Post,
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
@@ -18,6 +19,24 @@ export class VendorBalanceController {
     private readonly vendorBalanceService: VendorBalanceService,
     private readonly vendorsService: VendorsService,
   ) {}
+
+  @ApiOperation({
+    summary: 'Initialize vendor balance',
+    description:
+      'Initialize vendor balance. when the vendor is created it is initialized authomatically. but incase it is not you can initialize it useing this route.',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.VENDOR)
+  @Post()
+  async initializeVendorBalance(@ActiveUser() activeUserData: IActiveUserData) {
+    const { sub } = activeUserData;
+    const vendor = await this.vendorsService.findOneVendor({
+      userId: sub,
+    });
+    if (!vendor) throw new NotFoundException('vendor not found.');
+
+    return this.vendorBalanceService.initializeVendorBalance(vendor.id);
+  }
 
   @ApiOperation({
     summary: 'Get Vendor Balance.',
