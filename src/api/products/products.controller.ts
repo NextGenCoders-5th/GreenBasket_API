@@ -107,7 +107,7 @@ export class ProductsController {
   }
 
   @ApiOperation({
-    summary: 'Create Product.',
+    summary: 'Update Product.',
   })
   @ApiBody({
     type: UpdateProductDto,
