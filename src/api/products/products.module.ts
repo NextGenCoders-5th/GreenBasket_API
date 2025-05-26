@@ -11,6 +11,7 @@ import { VendorsModule } from '../vendors/vendors/vendors.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { FileUploadModule } from 'src/common/file-upload/file-upload.module';
 import { FindProductsByCategoryProvider } from './providers/find-products-by-category.provider';
+import { FindProductsByVendorProvider } from './providers/find-products-by-vendor.provider';
 
 @Module({
   controllers: [ProductsController],
@@ -23,6 +24,7 @@ import { FindProductsByCategoryProvider } from './providers/find-products-by-cat
     FindAllProductsProvider,
     UpdateProductByIdProvider,
     FindProductsByCategoryProvider,
+    FindProductsByVendorProvider,
   ],
   imports: [VendorsModule, PrismaModule, FileUploadModule],
   exports: [ProductsService],

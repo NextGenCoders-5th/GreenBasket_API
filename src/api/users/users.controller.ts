@@ -53,8 +53,12 @@ export class UsersController {
     description: 'users can use this route to get their profile.',
   })
   @ApiBearerAuth()
+  @Auth(AuthType.BEARER)
   @Get('account/current-user')
   findCurrentUser(@ActiveUser('sub') id: string) {
+    if (!id) {
+      throw new BadRequestException('current users id not found');
+    }
     return this.usersService.findUserById(id);
   }
 
