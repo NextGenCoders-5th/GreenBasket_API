@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UpdateVendorDto } from '../dto/update-vendor.dto';
-import { Vendor } from '@prisma/client';
+import { UserRole, Vendor } from '@prisma/client';
 import { FindOneVendorProvider } from './find-one-vendor.provider';
 import { UsersService } from 'src/api/users/users.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
@@ -44,6 +44,9 @@ export class UpdateVendorProvider {
           'user not found when creating a vendor, try again later',
         );
       }
+
+      if (vendor.userId !== userId && user.role === UserRole.VENDOR)
+        throw new BadRequestException('User has a vendor already.');
     }
     // fixeme
     // check if vendor already exists with the same email or phone number
@@ -51,9 +54,6 @@ export class UpdateVendorProvider {
     try {
       existingVendor = await this.prisma.vendor.findFirst({
         where: {
-          id: {
-            not: id,
-          },
           OR: [{ business_email }, { phone_number }],
         },
       });
@@ -63,7 +63,7 @@ export class UpdateVendorProvider {
         'unable to find a vendor, please try again later.',
       );
     }
-    if (existingVendor) {
+    if (existingVendor && existingVendor.id.toString() !== id.toString()) {
       throw new BadRequestException(
         'vendor already exists with the same phone number or business email. ',
       );
@@ -75,15 +75,27 @@ export class UpdateVendorProvider {
 
     // update vendor
     try {
-      vendor = await this.prisma.vendor.update({
-        where: { id },
-        data: {
-          business_email: business_email ?? vendor.business_email,
-          business_name: business_name ?? vendor.business_name,
-          phone_number: phone_number ?? vendor.phone_number,
-          logo_url: logo_url ?? vendor.logo_url,
-          userId: userId ?? vendor.userId,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        if (userId !== vendor.userId) {
+          await tx.user.update({
+            where: { id: vendor.userId },
+            data: { role: UserRole.CUSTOMER },
+          });
+          await tx.user.update({
+            where: { id: userId },
+            data: { role: UserRole.VENDOR },
+          });
+        }
+        vendor = await tx.vendor.update({
+          where: { id },
+          data: {
+            business_email: business_email ?? vendor.business_email,
+            business_name: business_name ?? vendor.business_name,
+            phone_number: phone_number ?? vendor.phone_number,
+            logo_url: logo_url ?? vendor.logo_url,
+            userId: userId ?? vendor.userId,
+          },
+        });
       });
     } catch (err) {
       console.log('update vendor provider', err);
