@@ -19,7 +19,7 @@ export class WishlistController {
 
   // create wishlist
   @ApiOperation({
-    summary: 'get my wishlists.',
+    summary: 'Create wishlist',
   })
   @ApiParam({
     name: 'id',
