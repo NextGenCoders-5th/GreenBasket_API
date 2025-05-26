@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { TransactionStatus, TransactionType } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 
@@ -99,8 +100,8 @@ export class VendorBalanceService {
         await tx.vendorTransaction.create({
           data: {
             amount,
-            type: 'ORDER_PAYMENT',
-            status: 'COMPLETED',
+            type: TransactionType.ORDER_PAYMENT,
+            status: TransactionStatus.COMPLETED,
             vendor_balance: { connect: { id: updatedBalance.id } },
           },
         });
