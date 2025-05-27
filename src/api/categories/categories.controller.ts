@@ -100,6 +100,7 @@ export class CategoriesController {
     description: 'category id',
     required: true,
   })
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor(
       'image',
@@ -108,14 +109,18 @@ export class CategoriesController {
       }),
     ),
   )
-  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
   @Role(UserRole.ADMIN)
   @Patch(':id')
   updateCategoryById(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
+    @UploadedFile() image: Express.Multer.File,
   ) {
+    if (image) {
+      updateCategoryDto.image_url = this.fileUploadService.getFilePath(image);
+    }
+
     return this.categoriesService.updateCategoryById(id, updateCategoryDto);
   }
 
