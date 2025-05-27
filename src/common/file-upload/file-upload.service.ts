@@ -6,14 +6,6 @@ import * as path from 'path';
 import { MaxImageFileSize } from 'src/lib/constants/max-image-file-size';
 import { v4 as uuidv4 } from 'uuid';
 
-type ValidMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
-
-const validMimeTypes: ValidMimeType[] = [
-  'image/png',
-  'image/jpg',
-  'image/jpeg',
-];
-
 @Injectable()
 export class FileUploadService {
   constructor(private readonly configService: ConfigService) {}
@@ -109,7 +101,6 @@ export class FileUploadService {
       }
     } catch (error) {
       console.error('Error removing file:', error);
-      throw new BadRequestException(`Failed to remove file: ${error.message}`);
     }
   }
 }
