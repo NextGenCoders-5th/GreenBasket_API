@@ -28,6 +28,7 @@ import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
 import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Controller('addresses')
 export class AddressesController {
@@ -70,7 +71,7 @@ export class AddressesController {
   @Role(UserRole.VENDOR)
   @Post('vendor')
   createVendorAddress(
-    createVendorAddressDto: CreateAddressDto,
+    @Body() createVendorAddressDto: CreateAddressDto,
     @ActiveUser('sub') userId: string,
   ) {
     return this.addressesService.createVendorAddress(
@@ -201,7 +202,7 @@ export class AddressesController {
     summary: 'Update Vendor Address',
   })
   @ApiBody({
-    type: UpdateUserAddressDto,
+    type: UpdateAddressDto,
     required: true,
   })
   @ApiParam({
@@ -214,11 +215,11 @@ export class AddressesController {
   @Patch('vendor/:addressId')
   updateVendorAddress(
     @Param('addressId') addressId: string,
-    @Body() updateVendorAddressDto: UpdateUserAddressDto,
+    @Body() updateVendorAddressDto: UpdateAddressDto,
     @ActiveUser('sub') userId: string,
   ) {
-    updateVendorAddressDto.userId = userId;
     return this.addressesService.updateVendorAddress(
+      userId,
       addressId,
       updateVendorAddressDto,
     );

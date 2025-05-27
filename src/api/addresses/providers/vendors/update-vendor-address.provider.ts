@@ -7,7 +7,7 @@ import { Address } from '@prisma/client';
 import { VendorsService } from 'src/api/vendors/vendors/vendors.service';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
-import { UpdateUserAddressDto } from '../../dto/users/update-user-address.dto';
+import { UpdateAddressDto } from '../../dto/update-address.dto';
 import { FindOneAddressProvider } from '../find-one-address.provider';
 
 @Injectable()
@@ -18,19 +18,12 @@ export class UpdateVendorAddressProvider {
     private readonly findOneAddressProvider: FindOneAddressProvider,
   ) {}
   public async updateVendorAddress(
+    userId: string,
     addressId: string,
-    updateVendorAddressDto: UpdateUserAddressDto,
+    updateVendorAddressDto: UpdateAddressDto,
   ) {
-    const {
-      city,
-      country,
-      latitude,
-      longitude,
-      street,
-      sub_city,
-      userId,
-      zip_code,
-    } = updateVendorAddressDto;
+    const { city, country, latitude, longitude, street, sub_city, zip_code } =
+      updateVendorAddressDto;
     let address: Address | undefined;
 
     // check if vendor exists

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Address } from '@prisma/client';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
 import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
 import { IDeleteVendorAddressById } from './interfaces/delete-vendor-address-by-id.interface';
@@ -67,10 +68,12 @@ export class AddressesService {
   }
 
   updateVendorAddress(
+    userId: string,
     addressId: string,
-    updateVendorAddressDto: UpdateUserAddressDto,
+    updateVendorAddressDto: UpdateAddressDto,
   ) {
     return this.updateVendorAddressProvider.updateVendorAddress(
+      userId,
       addressId,
       updateVendorAddressDto,
     );
