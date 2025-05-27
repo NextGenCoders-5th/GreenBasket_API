@@ -15,7 +15,16 @@ export class FindVendorByIdProvider {
     let vendor: Vendor | undefined;
 
     try {
-      vendor = await this.prisma.vendor.findFirst({ where: { id } });
+      vendor = await this.prisma.vendor.findFirst({
+        where: { id },
+        include: {
+          VendorBalance: true,
+          VendorBankAccount: true,
+          address: true,
+          orders: true,
+          products: true,
+        },
+      });
     } catch (err) {
       console.log('find vendor by id', err);
       throw new InternalServerErrorException(
