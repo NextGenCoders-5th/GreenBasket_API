@@ -18,18 +18,18 @@ export class StatsController {
     private readonly statsService: StatsService,
     private readonly prisma: PrismaService,
   ) {}
+
   @ApiOperation({
     summary: 'get dashboard stats',
   })
   @Role(UserRole.VENDOR, UserRole.ADMIN)
   @ApiQuery({
     name: 'vendorId',
-    description:
-      'admins can send vendor id on the query and geet details about that vendor.',
+    description: 'admins can send vendor id on the query.',
     required: false,
   })
   @ApiBearerAuth()
-  @Get()
+  @Get('dashboard')
   public async dashboardStats(
     @ActiveUser() activeUserData: IActiveUserData,
     @Query('vendorId') vendorId: string,
@@ -54,5 +54,42 @@ export class StatsController {
       throw new NotFoundException('vendor not found.');
     }
     return this.statsService.dashboardStats(vendor.id);
+  }
+
+  @ApiOperation({
+    summary: 'get vendor stats',
+  })
+  @Role(UserRole.VENDOR, UserRole.ADMIN)
+  @ApiQuery({
+    name: 'vendorId',
+    description: 'admins can send vendor id on the query',
+    required: false,
+  })
+  @ApiBearerAuth()
+  @Get('vendor-stats')
+  public async vendorStats(
+    @ActiveUser() activeUserData: IActiveUserData,
+    @Query('vendorId') vendorId: string,
+  ) {
+    const { role, sub: userId } = activeUserData;
+    let vendor: Vendor;
+    try {
+      vendor = await this.prisma.vendor.findUnique({
+        where: {
+          ...(role === UserRole.VENDOR && { userId }),
+          ...(role === UserRole.ADMIN && { vendorId }),
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(
+        'Unable to find vendor, please try again later.',
+      );
+    }
+
+    if (!vendor) {
+      throw new NotFoundException('vendor not found.');
+    }
+    return this.statsService.vendorStats(vendor.id);
   }
 }
