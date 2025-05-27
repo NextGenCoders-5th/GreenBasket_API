@@ -7,12 +7,13 @@ import * as moment from 'moment';
 export class StatsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  public async dashboardStats() {
+  public async dashboardStats(vendorId: string) {
     const startOfYear = moment().startOf('year').toDate();
     const endOfYear = moment().endOf('year').toDate();
 
     const orders = await this.prisma.order.findMany({
       where: {
+        vendorId,
         createdAt: {
           gte: startOfYear,
           lte: endOfYear,
