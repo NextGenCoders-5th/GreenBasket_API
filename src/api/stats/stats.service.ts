@@ -105,13 +105,8 @@ export class StatsService {
 
       return CreateApiResponse({
         status: 'success',
-        message: '',
-        data: {
-          groupedProducts,
-          groupedReviews,
-          data,
-          formatedData,
-        },
+        message: 'stats successfull.',
+        data: formatedData,
       });
     } catch (err) {
       console.log(err);

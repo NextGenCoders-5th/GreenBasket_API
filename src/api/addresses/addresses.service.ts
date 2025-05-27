@@ -1,21 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Address } from '@prisma/client';
+import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
 import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
-import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
-import { UpdateVendorAddressDto } from './dto/vendors/update-vendor-address.dto';
 import { IDeleteVendorAddressById } from './interfaces/delete-vendor-address-by-id.interface';
 import { DeleteAddressByIdProvider } from './providers/delete-address-by-id.provider';
 import { FindAddressByIdProvider } from './providers/find-address-by-id.provider';
 import { FindAllAddressesProvider } from './providers/find-all-addresses.provider';
 import { FindOneAddressProvider } from './providers/find-one-address.provider';
 import { CreateUserAddressProvider } from './providers/users/create-user-address.provider';
+import { FindUserAddressByIdProvider } from './providers/users/find-user-address-by-id.provider';
 import { UpdateUserAddressProvider } from './providers/users/update-user-address.provider';
 import { CreateVendorAddressProvider } from './providers/vendors/create-vendor-address.provider';
 import { DeleteVendorAddressByIdProvider } from './providers/vendors/delete-vendor-address-by-id.provider';
-import { UpdateVendorAddressProvider } from './providers/vendors/update-vendor-address.provider';
-import { FindUserAddressByIdProvider } from './providers/users/find-user-address-by-id.provider';
 import { FindVendorAddressesByIdProvider } from './providers/vendors/find-vendor-addresses-by-id.provider';
+import { UpdateVendorAddressProvider } from './providers/vendors/update-vendor-address.provider';
 
 @Injectable()
 export class AddressesService {
@@ -39,8 +38,12 @@ export class AddressesService {
     );
   }
 
-  createVendorAddress(createVendorAddressDto: CreateVendorAddressDto) {
+  createVendorAddress(
+    userId: string,
+    createVendorAddressDto: CreateAddressDto,
+  ) {
     return this.createVendorAddressProvider.createVendorAddress(
+      userId,
       createVendorAddressDto,
     );
   }
@@ -63,8 +66,12 @@ export class AddressesService {
     return this.findUserAddressByIdProvider.findUserAdressById(userId);
   }
 
-  updateVendorAddress(updateVendorAddressDto: UpdateVendorAddressDto) {
+  updateVendorAddress(
+    addressId: string,
+    updateVendorAddressDto: UpdateUserAddressDto,
+  ) {
     return this.updateVendorAddressProvider.updateVendorAddress(
+      addressId,
       updateVendorAddressDto,
     );
   }
