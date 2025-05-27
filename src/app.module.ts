@@ -23,6 +23,7 @@ import { EmailModule } from './common/email/email.module';
 import { MessageModule } from './common/message/message.module';
 import { VendorsRootModule } from './api/vendors/vendors_root.module';
 import { WishlistModule } from './api/wishlist/wishlist.module';
+import { StatsModule } from './api/stats/stats.module';
 
 @Module({
   imports: [
@@ -61,6 +62,8 @@ import { WishlistModule } from './api/wishlist/wishlist.module';
     VendorsRootModule,
 
     WishlistModule,
+
+    StatsModule,
   ],
   controllers: [AppController],
 })
