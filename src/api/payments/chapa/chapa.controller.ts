@@ -1,22 +1,24 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
-  Headers,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
   Post,
+  Req,
 } from '@nestjs/common';
-import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ChapaService } from './chapa.service';
-import { InitializeOrderPaymentDto } from './dtos/initialize-order-payment.dto';
+import * as crypto from 'crypto';
+import { Request } from 'express';
 import { ActiveUser, Auth } from 'src/api/auth/decorators';
 import { AuthType } from 'src/api/auth/enums/auth-type.enum';
-import { VerifyOrderPaymentDto } from './dtos/verify-order-payment.dto';
+import { ChapaService } from './chapa.service';
+import { InitializeOrderPaymentDto } from './dtos/initialize-order-payment.dto';
 
 @ApiTags('Payments/Chapa')
-@Controller('payments/chapa')
+@Controller('payments')
 export class ChapaController {
   constructor(
     private readonly chapaService: ChapaService,
@@ -46,30 +48,29 @@ export class ChapaController {
     description:
       'Chapa webhook url, this route is called by chapa when their is an event. it helps us to verify the payment.',
   })
-  @ApiBody({
-    type: VerifyOrderPaymentDto,
-    required: true,
-  })
   @Auth(AuthType.NONE)
-  @Get('chapa/webhook/verify')
-  public verifyOrderPayment(
-    @Body() verifyOrderPaymentDto: VerifyOrderPaymentDto,
-    @Headers('x-chapa-signature') chapaSignature: string,
-  ) {
+  @HttpCode(HttpStatus.OK)
+  @Post('chapa/webhook/verify')
+  public verifyOrderPayment(@Req() req: Request) {
     const hash = crypto
       .createHmac(
         'sha256',
-        this.configService.get('appConfig.chapaWebhookSecret'),
+        this.configService.get('paymentConfig.chapaWebhookSecret'),
       )
-      .update(JSON.stringify(verifyOrderPaymentDto))
+      .update(JSON.stringify(req.body))
       .digest('hex');
 
-    if (hash !== chapaSignature) {
-      console.error(`Invalid chapa signature: ${hash}`);
-      throw new BadRequestException('Invalid Chapa Signature');
+    if (hash == req.headers['x-chapa-signature']) {
+      // Retrieve the request's body
+      const event = req.body;
+      // Do something with event
+      return this.chapaService.verifyOrderPayment(event.tx_ref);
+    } else {
+      console.log('Unable to verify payment with webhook callback');
+      throw new InternalServerErrorException(
+        'Unable to verify payment with webhook callback',
+      );
     }
-
-    return this.chapaService.verifyOrderPayment(verifyOrderPaymentDto);
   }
 
   @ApiOperation({

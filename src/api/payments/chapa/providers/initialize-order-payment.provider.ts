@@ -104,6 +104,7 @@ export class InitializeOrderPaymentProvider {
         tx_ref: txRef,
         callback_url: this.configService.get('paymentConfig.chapaWebhookUrl'),
       });
+      console.log({ txRef });
 
       // return response
       return response;

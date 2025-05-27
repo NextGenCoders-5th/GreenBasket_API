@@ -85,6 +85,7 @@ export class VendorBalanceService {
 
   // Update balance after order completion
   async updateBalanceAfterOrder(vendorId: string, amount: number) {
+    console.log('vendor balance after order...');
     try {
       const updatedBalance = await this.prisma.$transaction(async (tx) => {
         // Update balance
