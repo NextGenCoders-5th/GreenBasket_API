@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -58,17 +59,34 @@ export class InitializeOrderPaymentProvider {
     }
 
     try {
-      // First we create payment with status of PENDING
-      await this.prisma.payment.create({
-        data: {
-          orderId,
-          amount: order.total_price,
-          status: PaymentStatus.PENDING,
-          paymentMethod: PaymentMethod.CHAPA,
-          reference: txRef,
-        },
+      const oldPayment = await this.prisma.payment.findFirst({
+        where: { orderId },
       });
+      // First we create payment with status of PENDING
+      if (!oldPayment) {
+        await this.prisma.payment.create({
+          data: {
+            orderId,
+            amount: order.total_price,
+            status: PaymentStatus.PENDING,
+            paymentMethod: PaymentMethod.CHAPA,
+            reference: txRef,
+          },
+        });
+      }
+
+      if (oldPayment?.status === 'PAID') {
+        throw new BadRequestException('Payment is paid of this order');
+      } else if (oldPayment?.status === 'PENDING') {
+        await this.prisma.payment.update({
+          where: { orderId },
+          data: {
+            reference: txRef,
+          },
+        });
+      }
     } catch (err) {
+      if (err instanceof BadRequestException) throw err;
       console.log('initializeOrderPayment: ', err);
       throw new InternalServerErrorException(
         'Unable to create payment. Please try again later.',
