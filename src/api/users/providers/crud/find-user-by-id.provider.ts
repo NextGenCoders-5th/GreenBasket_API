@@ -22,7 +22,13 @@ export class FindUserByIdProvider {
           address: true,
           cart: true,
           orders: true,
-          vendor: true,
+          vendor: {
+            include: {
+              address: true,
+              VendorBalance: true,
+              VendorBankAccount: true,
+            },
+          },
         },
       });
     } catch (err) {
