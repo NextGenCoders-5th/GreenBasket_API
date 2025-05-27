@@ -42,13 +42,19 @@ export class VendorBankAccountService {
     }
 
     try {
-      account = await this.prisma.vendorBankAccount.create({
-        data: {
-          account_name,
-          account_number,
-          bank_name,
-          vendorId,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        account = await tx.vendorBankAccount.create({
+          data: {
+            account_name,
+            account_number,
+            bank_name,
+            vendorId,
+          },
+        });
+        await tx.vendor.update({
+          where: { id: vendorId },
+          data: { have_bank_details: true },
+        });
       });
     } catch (err) {
       console.log(err);
@@ -64,10 +70,7 @@ export class VendorBankAccountService {
     });
   }
 
-  public async updateBankAccount(
-    id: string,
-    updateBankAccountDto: UpdateBankAccountDto,
-  ) {
+  public async updateBankAccount(updateBankAccountDto: UpdateBankAccountDto) {
     const { account_name, account_number, bank_name, vendorId } =
       updateBankAccountDto;
 
@@ -78,7 +81,7 @@ export class VendorBankAccountService {
     let account: VendorBankAccount;
     try {
       account = await this.prisma.vendorBankAccount.findUnique({
-        where: { id, vendorId },
+        where: { vendorId },
       });
     } catch (err) {
       console.log(err);
@@ -93,7 +96,7 @@ export class VendorBankAccountService {
 
     try {
       account = await this.prisma.vendorBankAccount.update({
-        where: { id, vendorId },
+        where: { id: account.id, vendorId },
         data: {
           account_name: account_name ?? account.account_name,
           account_number: account_number ?? account.account_number,
