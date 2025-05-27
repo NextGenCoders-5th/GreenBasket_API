@@ -190,7 +190,7 @@ export class UsersController {
     description: 'request account verification for users',
   })
   @ApiBearerAuth()
-  @Role(UserRole.CUSTOMER)
+  @Role(UserRole.CUSTOMER, UserRole.VENDOR)
   @Patch('account/request-account-verification')
   requestAccountVerification(@ActiveUser('sub') userId: string) {
     return this.usersService.requestAccountVerification(userId);
