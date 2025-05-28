@@ -77,7 +77,7 @@ export class FindAllProductsProvider {
               business_name: true,
               business_email: true,
               logo_url: true,
-              have_bank_details: true
+              have_bank_details: true,
             },
           },
           categories: {
