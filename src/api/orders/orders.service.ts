@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRole } from '@prisma/client';
+import { OrderStatus, UserRole } from '@prisma/client';
 import { CheckOutDto } from './dtos/checkout.dto';
 import { UpdateOrderStatusDto } from './dtos/update-order-status.dto';
 import {
@@ -39,8 +39,8 @@ export class OrdersService {
     return this.findMyOrderProvider.findMyOrder(orderId, userId);
   }
 
-  findMyOrders(userId: string) {
-    return this.findMyOrdersProvider.findMyOrders(userId);
+  findMyOrders(userId: string, status: OrderStatus) {
+    return this.findMyOrdersProvider.findMyOrders(userId, status);
   }
 
   findOrderById(orderId: string) {

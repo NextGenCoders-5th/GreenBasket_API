@@ -37,7 +37,11 @@ export class FindAllVendorOrdersProvider {
         },
         include: {
           Adress: true,
-          OrderItems: true,
+          OrderItems: {
+            include: {
+              Product: true,
+            },
+          },
           User: true,
         },
       });

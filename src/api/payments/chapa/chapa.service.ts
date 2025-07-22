@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { InitializeOrderPaymentDto } from './dtos/initialize-order-payment.dto';
+import { FindSupportedBankInfosProvider } from './providers/find-supported-bank-infos.provider';
 import { InitializeOrderPaymentProvider } from './providers/initialize-order-payment.provider';
 import { VerifyOrderPaymentProvider } from './providers/verify-order-payment.provider';
-import { InitializeOrderPaymentDto } from './dtos/initialize-order-payment.dto';
-import { VerifyOrderPaymentDto } from './dtos/verify-order-payment.dto';
-import { FindSupportedBankInfosProvider } from './providers/find-supported-bank-infos.provider';
 
 @Injectable()
 export class ChapaService {
@@ -19,10 +18,9 @@ export class ChapaService {
     );
   }
 
-  verifyOrderPayment(verifyOrderPaymentDto: VerifyOrderPaymentDto) {
-    return this.verifyOrderPaymentProvider.verifyOrderPayment(
-      verifyOrderPaymentDto,
-    );
+  verifyOrderPayment(tx_ref: string) {
+    console.log('service verify payment...');
+    return this.verifyOrderPaymentProvider.verifyOrderPayment(tx_ref);
   }
 
   findSupportedBankInfos() {

@@ -3,11 +3,11 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateVendorAddressDto } from '../../dto/vendors/create-vendor-address.dto';
-import { PrismaService } from 'src/common/prisma/prisma.service';
-import { VendorsService } from 'src/api/vendors/vendors/vendors.service';
-import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
 import { Address } from '@prisma/client';
+import { VendorsService } from 'src/api/vendors/vendors/vendors.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
+import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
+import { CreateAddressDto } from '../../dto/create-address.dto';
 
 @Injectable()
 export class CreateVendorAddressProvider {
@@ -17,18 +17,11 @@ export class CreateVendorAddressProvider {
   ) {}
 
   public async createVendorAddress(
-    createVendorAddressDto: CreateVendorAddressDto,
+    userId: string,
+    createVendorAddressDto: CreateAddressDto,
   ) {
-    const {
-      city,
-      country,
-      street,
-      sub_city,
-      zip_code,
-      latitude,
-      longitude,
-      userId,
-    } = createVendorAddressDto;
+    const { city, country, street, sub_city, zip_code, latitude, longitude } =
+      createVendorAddressDto;
 
     let address: Address | undefined;
 

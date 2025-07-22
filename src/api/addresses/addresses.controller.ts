@@ -21,14 +21,14 @@ import {
 } from '@nestjs/swagger';
 import { UserRole, Vendor } from '@prisma/client';
 import { ActiveUser, Role } from '../auth/decorators';
-import { AddressesService } from './addresses.service';
-import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
-import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
-import { CreateVendorAddressDto } from './dto/vendors/create-vendor-address.dto';
-import { UpdateVendorAddressDto } from './dto/vendors/update-vendor-address.dto';
 import { IActiveUserData } from '../auth/interfaces/active-user-data.interface';
 import { UsersService } from '../users/users.service';
 import { VendorsService } from '../vendors/vendors/vendors.service';
+import { AddressesService } from './addresses.service';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { CreateUserAddressDto } from './dto/users/create-user-address.dto';
+import { UpdateUserAddressDto } from './dto/users/update-user-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Controller('addresses')
 export class AddressesController {
@@ -64,14 +64,20 @@ export class AddressesController {
     description: 'use this api endpoint to create an address for Vendor.',
   })
   @ApiBody({
-    type: CreateVendorAddressDto,
+    type: CreateAddressDto,
     required: true,
   })
   @ApiBearerAuth()
   @Role(UserRole.VENDOR)
   @Post('vendor')
-  createVendorAddress(createVendorAddressDto: CreateVendorAddressDto) {
-    return this.addressesService.createVendorAddress(createVendorAddressDto);
+  createVendorAddress(
+    @Body() createVendorAddressDto: CreateAddressDto,
+    @ActiveUser('sub') userId: string,
+  ) {
+    return this.addressesService.createVendorAddress(
+      userId,
+      createVendorAddressDto,
+    );
   }
 
   // FindUserAddressByIdProvider
@@ -196,7 +202,7 @@ export class AddressesController {
     summary: 'Update Vendor Address',
   })
   @ApiBody({
-    type: UpdateVendorAddressDto,
+    type: UpdateAddressDto,
     required: true,
   })
   @ApiParam({
@@ -208,11 +214,15 @@ export class AddressesController {
   @Role(UserRole.VENDOR)
   @Patch('vendor/:addressId')
   updateVendorAddress(
-    @Body() updateVendorAddressDto: UpdateVendorAddressDto,
+    @Param('addressId') addressId: string,
+    @Body() updateVendorAddressDto: UpdateAddressDto,
     @ActiveUser('sub') userId: string,
   ) {
-    updateVendorAddressDto.userId = userId;
-    return this.addressesService.updateVendorAddress(updateVendorAddressDto);
+    return this.addressesService.updateVendorAddress(
+      userId,
+      addressId,
+      updateVendorAddressDto,
+    );
   }
 
   // deleteVendorAddressById

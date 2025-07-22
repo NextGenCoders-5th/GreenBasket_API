@@ -1,10 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { OrderStatus, Payment, PaymentStatus } from '@prisma/client';
-import { ChapaService } from 'chapa-nestjs';
-import { PrismaService } from 'src/common/prisma/prisma.service';
-import { CreateApiResponse } from 'src/lib/utils/create-api-response.util';
-import { VerifyOrderPaymentDto } from '../dtos/verify-order-payment.dto';
+import { ChapaService, VerifyResponse } from 'chapa-nestjs';
 import { VendorBalanceService } from 'src/api/vendors/vendor_balance/vendor_balance.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 
 @Injectable()
 export class VerifyOrderPaymentProvider {
@@ -14,14 +12,25 @@ export class VerifyOrderPaymentProvider {
     private readonly vendorBalanceService: VendorBalanceService,
   ) {}
 
-  public async verifyOrderPayment(
-    verifyOrderPaymentDto: VerifyOrderPaymentDto,
-  ) {
-    const { tx_ref } = verifyOrderPaymentDto;
+  public async verifyOrderPayment(tx_ref: string) {
+    const myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${process.env.CHAPA_SECRET_KEY}`);
+    const requestOptions: any = {
+      method: 'GET',
+      headers: myHeaders,
+    };
 
-    const response = await this.chapaService.verify({ tx_ref });
+    const res = await fetch(
+      `https://api.chapa.co/v1/transaction/verify/${tx_ref}`,
+      requestOptions,
+    );
 
-    if (response.status !== 'success') {
+    if (!res.ok) {
+      console.log('network error');
+    }
+    const body = (await res.json()) as VerifyResponse;
+
+    if (body.status !== 'success') {
       throw new BadRequestException(
         'Invalid transaction or Transaction not found	',
       );
@@ -43,8 +52,10 @@ export class VerifyOrderPaymentProvider {
     }
 
     if (!payment) {
+      console.log('Payment not found...');
       throw new BadRequestException('Payment not found');
     }
+    console.log({ payment });
 
     // if payment found update the status to paid
     try {
@@ -74,10 +85,6 @@ export class VerifyOrderPaymentProvider {
       );
     }
 
-    return CreateApiResponse({
-      status: 'success',
-      message: 'Payment verified successfully',
-      data: null,
-    });
+    return true;
   }
 }

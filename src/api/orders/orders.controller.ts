@@ -1,14 +1,23 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CheckOutDto } from './dtos/checkout.dto';
 import { ActiveUser, Role } from '../auth/decorators';
-import { UserRole } from '@prisma/client';
+import { OrderStatus, UserRole } from '@prisma/client';
 import { UpdateOrderStatusDto } from './dtos/update-order-status.dto';
 
 @Controller('orders')
@@ -72,11 +81,19 @@ export class OrdersController {
     summary: 'Get my orders',
     description: 'Get all orders for the authenticated user.',
   })
+  @ApiQuery({
+    name: 'status',
+    enum: OrderStatus,
+    required: false,
+  })
   @ApiBearerAuth()
   @Role(UserRole.CUSTOMER)
   @Get('my-orders')
-  findMyOrders(@ActiveUser('sub') userId: string) {
-    return this.ordersService.findMyOrders(userId);
+  findMyOrders(
+    @ActiveUser('sub') userId: string,
+    @Query('status') status: OrderStatus,
+  ) {
+    return this.ordersService.findMyOrders(userId, status);
   }
 
   // findOrderById
